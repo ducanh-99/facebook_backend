@@ -6,8 +6,14 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask = "*"
 gunicorn = "*"
+flask-mongoengine = "*"
+mongoengine-goodjson = "*"
+mongoengine = "*"
+Flask = "*"
+Flask-RESTful = "*"
+Flask-Bcrypt = "*"
+Flask-JWT-Extended = "*"
 
 [requires]
 python_version = "3.8"
