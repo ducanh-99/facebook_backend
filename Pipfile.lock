@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "518f3be98decb2be99fc9dfb31a3988f0eed8b174def8e2a110a15c6cbc5694d"
+            "sha256": "3dc4376feb6a369cfa92f68cb19c581a13b38cc40a06087c2b55c0db1e02ab17"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -98,6 +98,13 @@
                 "sha256:9d4093a1c888d8ce85940f339bd6f9d26ccddb9785673620e52b369c8dd4213a"
             ],
             "version": "==0.6.11"
+        },
+        "dnspython": {
+            "hashes": [
+                "sha256:36c5e8e38d4369a08b6780b7f27d790a292b2b08eea01607865bf0936c558e01",
+                "sha256:f69c21288a962f4da86e56c4905b49d11aba7938d3d740e80d9e366ee4f1632d"
+            ],
+            "version": "==1.16.0"
         },
         "flask": {
             "hashes": [
@@ -238,6 +245,9 @@
             "version": "==1.7.1"
         },
         "pymongo": {
+            "extras": [
+                "srv"
+            ],
             "hashes": [
                 "sha256:03dc64a9aa7a5d405aea5c56db95835f6a2fa31b3502c5af1760e0e99210be30",
                 "sha256:05fcc6f9c60e6efe5219fbb5a30258adb3d3e5cbd317068f3d73c09727f2abb6",
@@ -294,7 +304,7 @@
                 "sha256:ef76535776c0708a85258f6dc51d36a2df12633c735f6d197ed7dfcaa7449b99",
                 "sha256:f6efca006a81e1197b925a7d7b16b8f61980697bb6746587aad8842865233218"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "index": "pypi",
             "version": "==3.11.0"
         },
         "python-dateutil": {
