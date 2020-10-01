@@ -1,4 +1,5 @@
-
+class HaveDoneVerify(Exception):
+    pass
 
 def sucess():
     sucess = {

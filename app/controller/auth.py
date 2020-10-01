@@ -19,8 +19,7 @@ class SignupApi(Resource):
             body = request.get_json()
             user = User(**body)
             user.hash_password()
-            user.get_uuid()
-            user.default_avatar()
+            user.default()
 
             data = remove_password_convert_dict(user)
             self._res = response.sucess()
@@ -77,15 +76,24 @@ class LogoutApi(Resource):
             raise InternalServerError
 
 
-def VerifyApi(Resource):
+class VerifyApi(Resource):
+    res = {}
 
-    @jwt_required
     def post(self):
         try :
             body = request.get_json()
             user = User.objects.get(phonenumber=body.get('phonenumber'))
+            if user.verify:
+                raise response.HaveDoneVerify
+            user.verify = True
+            user.save()
+            self.res = response.sucess()
+            return jsonify(self.res)
+        except response.HaveDoneVerify:
+            self.res = response.action_done_previously()
+            return jsonify(self.res)
         except DoesNotExist:
-            self.res = response.user_is_invalid()
+            self.res = response.user_is_not_validated()
             return jsonify(self.res)
         except Exception:
             raise InternalServerError

@@ -11,17 +11,18 @@ class User(gj.Document):
     username = mongoengine.StringField(required=True)
     avatar = mongoengine.StringField()
     uuid = mongoengine.StringField(required=True)
+    verify = mongoengine.BooleanField()
     creation_date = mongoengine.DateTimeField()
     modified_date = mongoengine.DateTimeField(default=datetime.datetime.now)
 
     def hash_password(self):
         self.password = generate_password_hash(self.password).decode('utf8')
 
-    def get_uuid(self):
-        self.uuid = str(uuid.uuid4())
 
-    def default_avatar(self):
+    def default(self):
+        self.uuid = str(uuid.uuid4())
         self.avatar = "-1"
+        self.verify = False
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
