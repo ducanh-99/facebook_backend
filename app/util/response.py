@@ -63,23 +63,26 @@ def upload_file_failed():
     }
     return res
 
-def maximum_number_of_images ():
+
+def maximum_number_of_images():
     res = {
-        "code" : 1008,
+        "code": 1008,
         "message": "Maximum number of images"
     }
     return res
 
-def note_access ():
+
+def note_access():
     res = {
-        "code" : 1009,
+        "code": 1009,
         "message": "Not access"
     }
     return res
 
-def action_done_previously ():
+
+def action_done_previously():
     res = {
-        "code" : 1005,
+        "code": 1010,
         "message": "Action has been previously by this user"
     }
     return res
@@ -146,5 +149,12 @@ def exception_error():
     res = {
         "code": 9999,
         "message": "Exception error"
+    }
+    return res
+
+def user_is_invalid():
+    res = {
+        "code": 10000,
+        "message": "User is invalid"
     }
     return res

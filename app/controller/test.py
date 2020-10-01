@@ -1,9 +1,7 @@
 from flask import Response, request
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import  jwt_required, get_jwt_identity
 from flask_restful import Resource
-import datetime
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
-import inspect
 import json
 
 from app.model.test import Test
@@ -12,7 +10,6 @@ import app.util.response as response
 from flask import jsonify
 
 class TestApi(Resource):
-    _error = {}
     _res = {}
     def get(self):
         query = Test.objects()
@@ -25,12 +22,14 @@ class TestApi(Resource):
             self._res["data"][i] = test[0][i]
         return jsonify(self._res)
 
+    @jwt_required
     def post(self):
         try:
-            body = request.get_json()
-            test = Test(**body)
-            test.save()
-            id = test.id
-            return {'id' : str(id)}, 200
+            # body = request.get_json()
+            # test = Test(**body)
+            # test.save()
+            # id = test.id
+            self._res["id"] = 'ok'
+            return jsonify(self._res)
         except Exception as e:
             raise InternalServerError
