@@ -1,5 +1,5 @@
 from app.controller.test import TestApi
-from app.controller.auth import SignupApi, LoginApi, LogoutApi, VerifyApi
+from app.controller.auth import SignupApi, LoginApi, LogoutApi
 from app.controller.verifyController import GetVerifyApi
 
 
