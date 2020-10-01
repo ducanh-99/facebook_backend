@@ -16,7 +16,7 @@ class DeletingMovieError(Exception):
 class MovieNotExistsError(Exception):
     pass
 
-class EmailAlreadyExistsError(Exception):
+class NumberAlreadyExistsError(Exception):
     pass
 
 class UnauthorizedError(Exception):
