@@ -50,7 +50,6 @@ class LoginApi(Resource):
                 identity=str(user.id), expires_delta=expires)
 
             data = remove_password_convert_dict(user)
-            print(data)
             self.res = response.sucess()
             self.res = response_value(self.res, data)
             self.res["data"]["token"] = access_token
@@ -76,25 +75,5 @@ class LogoutApi(Resource):
             raise InternalServerError
 
 
-class VerifyApi(Resource):
-    res = {}
 
-    def post(self):
-        try :
-            body = request.get_json()
-            user = User.objects.get(phonenumber=body.get('phonenumber'))
-            if user.verify:
-                raise response.HaveDoneVerify
-            user.verify = True
-            user.save()
-            self.res = response.sucess()
-            return jsonify(self.res)
-        except response.HaveDoneVerify:
-            self.res = response.action_done_previously()
-            return jsonify(self.res)
-        except DoesNotExist:
-            self.res = response.user_is_not_validated()
-            return jsonify(self.res)
-        except Exception:
-            raise InternalServerError
     

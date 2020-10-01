@@ -1,5 +1,7 @@
 class HaveDoneVerify(Exception):
     pass
+class ParameterValueInvalid(Exception):
+    pass
 
 def sucess():
     sucess = {
