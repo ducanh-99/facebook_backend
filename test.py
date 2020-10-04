@@ -1,20 +1,22 @@
-from flask_mongoengine import Document
 import inspect
 
 
 class Test:
-    def __init__ (self):
+
+    def __init__(self):
         self.a = 1
         self.b = 2
-    
+
     def abc(self):
-        self.a = 3
+        x = 1
+        try:
+            print(x)
+            self.a = 2
+        except NameError:
+            print("Variable x is not defined")
+            self.a = 3
+        return self.a
 
-def test(a):
-    a.abc()
-    print (a.a)
 
-
-ab  = Test()
-test(ab)
-print (ab.a)
+ab = Test()
+print (ab.abc())

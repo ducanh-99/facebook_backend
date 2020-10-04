@@ -3,6 +3,13 @@ class HaveDoneVerify(Exception):
 class ParameterValueInvalid(Exception):
     pass
 
+def internal_server():
+    sucess = {
+        "code": 500,
+        "message": "Something wrong"
+    }
+    return sucess
+
 def sucess():
     sucess = {
         "code": 1000,

@@ -13,23 +13,22 @@ class GetVerifyApi(Resource):
     res = {}
 
     def get(self):
-        try :
+        try:
             body = request.get_json()
             user = User.objects.get(phonenumber=body.get('phonenumber'))
             if user.verify:
                 raise response.HaveDoneVerify
             self.res = response.sucess()
-            return jsonify(self.res)
         except response.HaveDoneVerify:
             self.res = response.action_done_previously()
-            return jsonify(self.res)
         except DoesNotExist:
             self.res = response.user_is_not_validated()
-            return jsonify(self.res)
         except Exception:
-            raise InternalServerError
+            self.res = response.internal_server()
+        return jsonify(self.res)
+
     def post(self):
-        try :
+        try:
             body = request.get_json()
             user = User.objects.get(phonenumber=body.get('phonenumber'))
             if user.verify:
@@ -39,15 +38,13 @@ class GetVerifyApi(Resource):
             user.verify = True
             user.save()
             self.res = response.sucess()
-            return jsonify(self.res)
         except response.HaveDoneVerify:
             self.res = response.user_existed()
-            return jsonify(self.res)
         except response.ParameterValueInvalid:
             self.res = response.parameter_value_invalid()
-            return jsonify(self.res)
         except DoesNotExist:
             self.res = response.user_is_not_validated()
-            return jsonify(self.res)
         except Exception:
-            raise InternalServerError
+            self.res = response.internal_server()
+        return jsonify(self.res)
+        

@@ -5,6 +5,7 @@ from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
 import json
 
 from app.model.test import Test
+from app.model.user import User
 from app.util.errors import InternalServerError
 import app.util.response as response
 from flask import jsonify
@@ -25,11 +26,16 @@ class TestApi(Resource):
     @jwt_required
     def post(self):
         try:
+            user_id = get_jwt_identity()
             # body = request.get_json()
-            # test = Test(**body)
-            # test.save()
-            # id = test.id
-            self._res["id"] = 'ok'
+            user = User.objects.get(id=user_id)
+            test = Test(test = user)
+            test.default(user)
+            test.save()
+            user.tests.append(test.id)
+            user.update()
+            id = test.id
+            self._res["id"] = str(id)
             return jsonify(self._res)
         except Exception as e:
-            raise InternalServerError
+            raise e

@@ -12,7 +12,7 @@ import app.util.response as response
 
 
 class SignupApi(Resource):
-    _res = {}
+    res = {}
 
     def post(self):
         try:
@@ -22,17 +22,16 @@ class SignupApi(Resource):
             user.default()
 
             data = remove_password_convert_dict(user)
-            self._res = response.sucess()
-            self._res = response_value(self._res, data)
+            self.res = response.sucess()
+            self.res = response_value(self.res, data)
             user.save()
-            return jsonify(self._res)
         except FieldDoesNotExist:
-            raise SchemaValidationError
+            self.res = response.parameter_not_enough()
         except NotUniqueError:
-            self._res = response.user_existed()
-            return jsonify(self._res)
+            self.res = response.user_existed()
         except Exception as e:
-            raise InternalServerError
+            self.res = response.internal_server()
+        return jsonify(self.res)
 
 
 class LoginApi(Resource):
@@ -53,13 +52,11 @@ class LoginApi(Resource):
             self.res = response.sucess()
             self.res = response_value(self.res, data)
             self.res["data"]["token"] = access_token
-
-            return jsonify(self.res)
         except (UnauthorizedError, DoesNotExist):
             self.res = response.user_is_not_validated()
-            return jsonify(self.res)
         except Exception as e:
-            raise InternalServerError
+            self.res = response.internal_server()
+        return jsonify(self.res)
 
 
 class LogoutApi(Resource):
@@ -70,10 +67,7 @@ class LogoutApi(Resource):
         try:
             user_id = get_jwt_identity()
             self.res = response.sucess()
-            return jsonify(self.res)
         except Exception:
-            raise InternalServerError
-
-
-
-    
+            self.res = response.internal_server()
+        return jsonify(self.res)
+        
