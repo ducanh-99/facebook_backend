@@ -1,27 +1,27 @@
 import mongoengine_goodjson as gj
 from flask_bcrypt import generate_password_hash, check_password_hash
 import datetime
-import mongoengine as mongo
+from mongoengine import *
 import uuid
 
 from app.model.post import Post
 
 
 class User(gj.Document):
-    phonenumber = mongo.StringField(required=True, unique=True)
-    password = mongo.StringField(required=True, min_length=6)
-    firtname = mongo.StringField(required=True)
-    lastname = mongo.StringField(required=True)
-    username = mongo.StringField(required=True)
-    birthday = mongo.StringField(required=True)
-    blocks = mongo.ListField(mongo.ReferenceField('User'))
-    avatar = mongo.StringField()
-    uuid = mongo.StringField(required=True)
-    verify = mongo.BooleanField()
-    posts = mongo.ListField(mongo.ReferenceField(
-        'Post', reverse_delete_rule=mongo.PULL))
-    creation_date = mongo.DateTimeField()
-    modified_date = mongo.DateTimeField(default=datetime.datetime.now)
+    phonenumber = StringField(required=True, unique=True)
+    password = StringField(required=True, min_length=6)
+    firtname = StringField(required=True)
+    lastname = StringField(required=True)
+    username = StringField(required=True)
+    birthday = StringField(required=True)
+    blocks = ListField(ReferenceField('User'))
+    avatar = StringField()
+    uuid = StringField(required=True)
+    verify = BooleanField()
+    posts = ListField(ReferenceField(
+        'Post', reverse_delete_rule=PULL))
+    creation_date = DateTimeField()
+    modified_date = DateTimeField(default=datetime.datetime.now)
 
     def hash_password(self):
         self.password = generate_password_hash(self.password).decode('utf8')
@@ -46,4 +46,4 @@ class User(gj.Document):
         return super(User, self).save(*args, **kwargs)
 
 
-User.register_delete_rule(Post, 'owner', mongo.CASCADE)
+User.register_delete_rule(Post, 'owner', CASCADE)

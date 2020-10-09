@@ -1,9 +1,10 @@
-
 import mongoengine_goodjson as gj
-import datetime
 from mongoengine import *
+import datetime
 
-class Friend(gj.Document):
+class Image(gj.Document):
+    image = StringField()
+    post = ReferenceField("Post")
     creation_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)
 
@@ -11,4 +12,4 @@ class Friend(gj.Document):
         if not self.creation_date:
             self.creation_date = datetime.datetime.now()
         self.modified_date = datetime.datetime.now()
-        return super(Friend, self).save(*args, **kwargs)
+        return super(Image, self).save(*args, **kwargs)

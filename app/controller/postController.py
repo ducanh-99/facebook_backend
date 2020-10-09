@@ -2,6 +2,7 @@ from flask import Response, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
+import json
 
 from app.model.post import Post
 from app.model.user import User
@@ -48,7 +49,10 @@ class PostApi(Resource):
             user_id = get_jwt_identity()
             post = Post.objects.get(id=id, owner=user_id)
             body = request.get_json()
-            Post.objects.get(id=id).update(**body)
+            post.is_block = False
+            post = resCon.update_post(post, body)
+            # post["comment"] = 5
+            post.save()
             self.res = response.sucess()
             self.res = resCon.format_response_post(self.res, body)
         except DoesNotExist:

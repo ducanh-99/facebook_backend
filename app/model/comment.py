@@ -4,6 +4,7 @@ import datetime
 import mongoengine
 
 class Comment(gj.Document):
+    # post = 
     creation_date = mongoengine.DateTimeField()
     modified_date = mongoengine.DateTimeField(default=datetime.datetime.now)
 

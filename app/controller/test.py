@@ -4,7 +4,7 @@ from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
 import json
 
-from app.model.test import Test
+from app.model.test import Test, DocumentA, DocumentB
 from app.model.user import User
 from app.util.errors import InternalServerError
 import app.util.response as response
@@ -23,19 +23,18 @@ class TestApi(Resource):
             self._res["data"][i] = test[0][i]
         return jsonify(self._res)
 
-    @jwt_required
+    # @jwt_required
     def post(self):
         try:
-            user_id = get_jwt_identity()
-            # body = request.get_json()
-            user = User.objects.get(id=user_id)
-            test = Test(test = user)
-            test.default(user)
-            test.save()
-            user.tests.append(test.id)
-            user.update()
+            # user_id = get_jwt_identity()
+            body = request.get_json()
+            # user = User.objects.get(id=user_id)
+            test = DocumentB()
+            # test.default(user)
+            test.save(**body)
             id = test.id
             self._res["id"] = str(id)
             return jsonify(self._res)
         except Exception as e:
             raise e
+

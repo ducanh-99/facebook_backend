@@ -1,22 +1,25 @@
 import mongoengine_goodjson as gj
-import mongoengine as mongo
+from mongoengine import *
 import datetime
+
+from app.model.image import Image
+from app.model.video import Video
 
 
 class Post(gj.Document):
-    described = mongo.StringField(required=True)
-    like = mongo.IntField(required=True)
-    comment = mongo.IntField(required=True)
-    is_liked = mongo.BooleanField()
-    image = mongo.DictField()
-    video = mongo.DictField()
-    owner = mongo.ReferenceField('User')
-    owner_avatar = mongo.StringField(required=True)
-    owner_name = mongo.StringField(required=True)
-    state = mongo.StringField()
+    described = StringField(required=True)
+    like = IntField(required=True)
+    comment = IntField(required=True)
+    is_liked = BooleanField()
+    images = ListField(ReferenceField("Image"), reverse_delete_rule=PULL)
+    video = ListField(ReferenceField('Video'), reverse_delete_rule=PULL)
+    owner = ReferenceField('User')
+    owner_avatar = StringField(required=True)
+    owner_name = StringField(required=True)
+    state = StringField()
 
-    creation_date = mongo.DateTimeField()
-    modified_date = mongo.DateTimeField(default=datetime.datetime.now)
+    creation_date = DateTimeField()
+    modified_date = DateTimeField(default=datetime.datetime.now)
 
     def set_default(self, user):
         self.like = 0
@@ -30,3 +33,7 @@ class Post(gj.Document):
             self.creation_date = datetime.datetime.now()
         self.modified_date = datetime.datetime.now()
         return super(Post, self).save(*args, **kwargs)
+
+Post.register_delete_rule(Image, "post", CASCADE)
+Post.register_delete_rule(Video, "post", CASCADE)
+ 
