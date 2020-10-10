@@ -2,6 +2,7 @@ from app.controller.test import TestApi
 from app.controller.auth import SignupApi, LoginApi, LogoutApi
 from app.controller.verifyController import GetVerifyApi
 from app.controller.postController import PostApi, PostsApi
+from app.controller.profileController import AvtUploadApi
 
 
 def initialize_routes(api):
@@ -14,3 +15,5 @@ def initialize_routes(api):
     # post
     api.add_resource(PostsApi, '/api/post')
     api.add_resource(PostApi, '/api/post/<id>')
+    # 
+    api.add_resource(AvtUploadApi, '/api/upload_avt')
