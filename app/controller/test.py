@@ -13,14 +13,7 @@ from flask import jsonify
 class TestApi(Resource):
     _res = {}
     def get(self):
-        query = Test.objects()
-        test = Test.objects().to_json()
-        self._res = response.sucess()
-        self._res["data"] = {}
-        test = json.loads(test)
-        print (test[0])
-        for i in test[0]:
-            self._res["data"][i] = test[0][i]
+        self.res = response.sucess()
         return jsonify(self._res)
 
     # @jwt_required
