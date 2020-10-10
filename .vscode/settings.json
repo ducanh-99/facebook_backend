@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/ducanh/.local/share/virtualenvs/heroku-Y9OH2TUP/bin/python"
+    "python.pythonPath": "/home/ducanh/.local/share/virtualenvs/heroku-Y9OH2TUP/bin/python",
+    "compile-hero.disable-compile-files-on-did-save-code": false
 }

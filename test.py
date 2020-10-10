@@ -20,3 +20,4 @@ class Test:
 
 ab = Test()
 print (ab.abc())
+a = 1+2
