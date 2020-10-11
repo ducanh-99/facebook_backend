@@ -4,7 +4,7 @@ import mongoengine
 
 
 class Test(gj.Document):
-    test = mongoengine.DictField()
+    test = mongoengine.FileField()
     creation_date = mongoengine.DateTimeField()
     modified_date = mongoengine.DateTimeField(default=datetime.datetime.now)
 

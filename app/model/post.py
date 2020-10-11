@@ -14,7 +14,7 @@ class Post(gj.Document):
     images = ListField(ReferenceField("Image"), reverse_delete_rule=PULL)
     video = ListField(ReferenceField('Video'), reverse_delete_rule=PULL)
     owner = ReferenceField('User')
-    owner_avatar = StringField(required=True)
+    owner_avatar = FileField()
     owner_name = StringField(required=True)
     state = StringField()
 

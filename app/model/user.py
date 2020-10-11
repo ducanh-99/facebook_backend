@@ -10,12 +10,12 @@ from app.model.post import Post
 class User(gj.Document):
     phonenumber = StringField(required=True, unique=True)
     password = StringField(required=True, min_length=6)
-    firtname = StringField(required=True)
+    firstname = StringField(required=True)
     lastname = StringField(required=True)
     username = StringField(required=True)
     birthday = StringField(required=True)
     blocks = ListField(ReferenceField('User'))
-    avatar = StringField()
+    avatar = FileField()
     uuid = StringField(required=True)
     verify = BooleanField()
     posts = ListField(ReferenceField(
@@ -27,7 +27,7 @@ class User(gj.Document):
         self.password = generate_password_hash(self.password).decode('utf8')
 
     def default(self):
-        self.username = self.firtname + " " + self.lastname
+        self.username = self.firstname + " " + self.lastname
         self.uuid = str(uuid.uuid4())
         self.avatar = "-1"
         self.verify = False

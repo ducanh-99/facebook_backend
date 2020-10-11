@@ -9,36 +9,43 @@ from app.model.user import User
 import app.util.response as response
 
 
-UPLOAD_FOLDER = 'static/avt'
-parser = reqparse.RequestParser()
-parser.add_argument(
-    'file', type=werkzeug.datastructures.FileStorage, location='files')
-
 
 class AvtUploadApi(Resource):
     decorators = []
-    res = {}
+    res = {}        
 
     @jwt_required
     def post(self):
         try:
+            body = request.files.get("file")
             user_id = get_jwt_identity()
             user = User.objects.get(id=user_id)
-            data = parser.parse_args()
-            if data['file'] == "":
+            if body == "":
                 return {
                     'data': '',
                     'message': 'No file found',
                     'status': 'error'
                 }
-            photo = data['file']
-
-            if photo:
-                filename = str(uuid.uuid4().hex) + '.png'
-                user.avatar = UPLOAD_FOLDER + '/' + filename
+            else :
+                filename = str(uuid.uuid4().hex) + '.jpeg'
+                user.avatar.replace(body, content_type= 'image/jpeg', filename=filename)
                 user.save()
-                photo.save(os.path.join(UPLOAD_FOLDER, filename))
                 self.res = response.sucess()
+                self.res["avatar"] = filename
         except Exception:
+            raise Exception
             self.res = response.upload_file_failed()
+        return jsonify(self.res)
+
+class AvatarApi(Resource):
+
+    res = {}
+    def get(self, id):
+        try:
+            user = User.objects.get(id=id)
+            avatar = user.avatar.read()
+            content_type = user.avatar.content_type
+            return Response(avatar, content_type=content_type)
+        except Exception:
+            self.res = response.internal_server()
         return jsonify(self.res)

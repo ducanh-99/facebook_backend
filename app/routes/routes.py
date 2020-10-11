@@ -2,8 +2,8 @@ from app.controller.test import TestApi
 from app.controller.auth import SignupApi, LoginApi, LogoutApi
 from app.controller.verifyController import GetVerifyApi
 from app.controller.postController import PostApi, PostsApi
-from app.controller.profileController import AvtUploadApi
-
+from app.controller.profileController import AvtUploadApi, AvatarApi
+from app.controller.likeController import LikeApi, DislikeApi
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -17,3 +17,7 @@ def initialize_routes(api):
     api.add_resource(PostApi, '/api/post/<id>')
     # 
     api.add_resource(AvtUploadApi, '/api/upload_avt')
+    api.add_resource(AvatarApi, '/api/get_avt/<id>')
+    # like
+    api.add_resource(LikeApi, "/api/like/<id>")
+    api.add_resource(DislikeApi, "/api/dislike/<id>")
