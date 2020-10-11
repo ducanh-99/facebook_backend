@@ -15,7 +15,7 @@ def initialize_routes(api):
     # post
     api.add_resource(PostsApi, '/api/post')
     api.add_resource(PostApi, '/api/post/<id>')
-    # 
+    # avtar
     api.add_resource(AvtUploadApi, '/api/upload_avt')
     api.add_resource(AvatarApi, '/api/get_avt/<id>')
     # like

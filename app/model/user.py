@@ -15,7 +15,7 @@ class User(gj.Document):
     username = StringField(required=True)
     birthday = StringField(required=True)
     blocks = ListField(ReferenceField('User'))
-    avatar = FileField()
+    avatar = FileField(default=None)
     uuid = StringField(required=True)
     verify = BooleanField()
     posts = ListField(ReferenceField(
@@ -29,7 +29,6 @@ class User(gj.Document):
     def default(self):
         self.username = self.firstname + " " + self.lastname
         self.uuid = str(uuid.uuid4())
-        self.avatar = "-1"
         self.verify = False
         # self.blocks = []
 
