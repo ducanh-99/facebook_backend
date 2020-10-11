@@ -78,8 +78,6 @@ class PostApi(Resource):
             post = Post.objects.get(id=id).to_json()
             self.res = response.sucess()
             self.res = resCon.format_response_post(self.res, post)
-        except DoesNotExist:
-            self.res = response.post_is_not_exit()
         except Exception as e:
             self.res = response.internal_server()
         return jsonify(self.res)

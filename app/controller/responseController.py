@@ -1,4 +1,5 @@
 import json
+import app.util.response as response
 from bson import ObjectId
 
 
@@ -19,10 +20,8 @@ def remove_password_convert_dict(user):
 
 def format_response_post(response, data):
     try:
-        data = json.dumps(data)
         data = json.loads(data)
         response["data"] = data
-        response["data"]["is_block"] = False
         return response
     except ValueError as e:
         print(e)
@@ -46,10 +45,18 @@ def update_post(post, body):
             if body[i] != post.is_block:
                 post.is_block = body[i]
             continue
-        if i == "is_like" :
+        if i == "is_like":
             if body[i] != post.is_like:
                 post.is_like = body[i]
             continue
         if body[i] != post[i]:
             post[i] = body[i]
     return post
+
+
+def like_convert(post):
+    res = {}
+    res = response.sucess()
+    res["data"] = {}
+    res["data"]["like"] = post.like
+    return res
