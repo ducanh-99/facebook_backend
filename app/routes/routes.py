@@ -5,6 +5,7 @@ from app.controller.postController import PostApi, PostsApi
 from app.controller.profileController import AvtUploadApi, AvatarApi
 from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
+from app.controller.friendController import ConfirmApi, RequestApi
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -24,3 +25,6 @@ def initialize_routes(api):
     api.add_resource(DislikeApi, "/api/dislike/<id>")
     # comment
     api.add_resource(PostCommentApi, '/api/comment/<id>')
+    # friends
+    api.add_resource(ConfirmApi, "/api/friend/confirm/<id>")
+    api.add_resource(RequestApi, "/api/friend/request/<id>")

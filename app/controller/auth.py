@@ -2,9 +2,11 @@ from flask import Response, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
+import json
 import datetime
 
 from app.model.user import User
+from app.model.friends import Friend
 from app.util.errors import SchemaValidationError, NumberAlreadyExistsError, UnauthorizedError, \
     InternalServerError
 from app.controller.responseController import response_value, remove_password_convert_dict
@@ -20,11 +22,11 @@ class SignupApi(Resource):
             user = User(**body)
             user.hash_password()
             user.default()
-
             data = remove_password_convert_dict(user)
             self.res = response.sucess()
             self.res = response_value(self.res, data)
             user.save()
+            friend = Friend(owner=user).save()
         except FieldDoesNotExist:
             self.res = response.parameter_not_enough()
         except NotUniqueError:
@@ -36,7 +38,13 @@ class SignupApi(Resource):
 
 class LoginApi(Resource):
     res = {}
-
+    def get(self):
+        user = User.objects()
+        user_id = []
+        for i in user:
+            user_id.append(i["id"])
+        print(user_id)
+        return jsonify(response.sucess())
     def post(self):
         try:
             body = request.get_json()

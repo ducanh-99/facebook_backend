@@ -20,6 +20,7 @@ class User(gj.Document):
     verify = BooleanField()
     posts = ListField(ReferenceField(
         'Post', reverse_delete_rule=PULL))
+    friends = IntField(default=0)
     creation_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)
 
