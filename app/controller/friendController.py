@@ -9,8 +9,22 @@ from app.model.user import User
 import app.controller.responseController as resCon
 import app.util.response as response
 
-class getInforApi(Resource):
+class RequestApi(Resource):
     pass
 
-class UpdateInforApi(Resource):
+class RecommendFriendApi(Resource):
     pass
+
+class ConfirmApi(Resource):
+    pass
+
+class BlockApi(Resource):
+    pass
+
+class ListBlockApi(Resource):
+    pass
+
+
+class ListFriendApi(Resource):
+    pass
+

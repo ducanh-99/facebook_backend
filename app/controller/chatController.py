@@ -9,8 +9,14 @@ from app.model.user import User
 import app.controller.responseController as resCon
 import app.util.response as response
 
-class getInforApi(Resource):
+class GetListConversationApi(Resource):
     pass
 
-class UpdateInforApi(Resource):
+class GetMessageConversationApi(Resource):
+    pass
+
+class ReadedConversationApi(Resource):
+    pass
+
+class ConversationApi(Resource):
     pass

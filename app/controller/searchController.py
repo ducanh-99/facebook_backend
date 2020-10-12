@@ -9,8 +9,9 @@ from app.model.user import User
 import app.controller.responseController as resCon
 import app.util.response as response
 
-class getInforApi(Resource):
+class SearchApi(Resource):
+    # delete search api
     pass
 
-class UpdateInforApi(Resource):
+class ListSearchApi(Resource):
     pass

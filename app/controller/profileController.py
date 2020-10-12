@@ -49,3 +49,6 @@ class AvatarApi(Resource):
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
+
+class ProfileApi(Resource):
+    pass

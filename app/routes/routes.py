@@ -4,6 +4,7 @@ from app.controller.verifyController import GetVerifyApi
 from app.controller.postController import PostApi, PostsApi
 from app.controller.profileController import AvtUploadApi, AvatarApi
 from app.controller.likeController import LikeApi, DislikeApi
+from app.controller.commentController import PostCommentApi
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -21,3 +22,5 @@ def initialize_routes(api):
     # like
     api.add_resource(LikeApi, "/api/like/<id>")
     api.add_resource(DislikeApi, "/api/dislike/<id>")
+    # comment
+    api.add_resource(PostCommentApi, '/api/comment/<id>')

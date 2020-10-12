@@ -70,4 +70,7 @@ class LogoutApi(Resource):
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
+
+class ChangePasswordApi(Resource):
+    pass
         

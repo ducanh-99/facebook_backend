@@ -8,9 +8,3 @@ from app.model.post import Post
 from app.model.user import User
 import app.controller.responseController as resCon
 import app.util.response as response
-
-class getInforApi(Resource):
-    pass
-
-class UpdateInforApi(Resource):
-    pass

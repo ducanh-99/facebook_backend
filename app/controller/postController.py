@@ -6,6 +6,7 @@ import json
 
 from app.model.post import Post
 from app.model.user import User
+from app.model.comment import Comment
 import app.controller.responseController as resCon
 import app.util.response as response
 
@@ -31,6 +32,7 @@ class PostsApi(Resource):
             post = Post(**body, owner=user)
             post.set_default(user)
             post.save()
+            comment = Comment(post=post).save()
             user.update(push__posts=post)
             return {"mes": "ok"}, 200
         except DoesNotExist:
@@ -81,3 +83,9 @@ class PostApi(Resource):
         except Exception as e:
             self.res = response.internal_server()
         return jsonify(self.res)
+
+class ReportPostApi(Resource):
+    pass
+
+class GetNewItemApi(Resource):
+    pass

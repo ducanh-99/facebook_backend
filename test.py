@@ -18,6 +18,6 @@ class Test:
         return self.a
 
 
-ab = Test()
-print (ab.abc())
-a = 1+2
+a = [{"a": 1, 'b' : 2}, {"a" : 2}]
+a.remove({"a" :1})
+print(a)
