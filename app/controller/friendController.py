@@ -9,22 +9,23 @@ from app.model.user import User
 import app.controller.responseController as resCon
 import app.util.response as response
 
+
 class RequestApi(Resource):
     res = {}
+
     @jwt_required
     def get(self, id):
         try:
-            user_id = get_jwt_identity()
-            user = User.objects.get(id=user_id) 
-            owner = User.objects.get(id=id)
-            # req = Request(owner=owner).save()
-            request_friend = Request.objects.get(owner=owner)
-            sent_request = Request.objects.get(owner=user)
-            if user["id"] != owner["id"]:
-                request_friend.request.append(user)
-                sent_request.sent_request.append(owner)
-            request_friend.save()
-            sent_request.save()
+            sender_id = get_jwt_identity()
+            sender = User.objects.get(id=sender_id)
+            recevied = User.objects.get(id=id)
+
+            if sender["id"] != recevied["id"]:
+                Friend.objects(owner=sender).update_one(
+                    push__list_sent_request=recevied)
+                Friend.objects(owner=recevied).update_one(
+                    push__list_request=sender)
+
             self.res = response.sucess()
         except DoesNotExist:
             self.res = response.user_is_invalid()
@@ -37,42 +38,39 @@ class RequestApi(Resource):
 class RecommendFriendApi(Resource):
     pass
 
+
 class ConfirmApi(Resource):
-    res  = {}
-    
+    res = {}
+
     @jwt_required
     def get(self, id):
         try:
-            owner_id = get_jwt_identity()
-            owner = User.objects.get(id=owner_id)
-            user = User.objects.get(id=id)
-            # if user.friends == 0:
-            #     friend = Friend(owner=user).save()
-            request_owner = Request.objects.get(owner=owner)
-            request_user = Request.objects.get(owner=user)
+            recevied_id = get_jwt_identity()
+            recevied = User.objects.get(id=recevied_id)
+            sender = User.objects.get(id=id)
 
-            friend_owner = Friend.objects.get(owner = owner)
-            friend_user = Friend.objects.get(owner=user)
-
-            if user["id"] != owner["id"]:
-                friend_owner.friends.append(user)
-                friend_user.friends.append(owner)
-                owner.friends += 1
-                user.friends += 1
-            # save
-            friend_owner.save()
-            friend_user.save()
-            owner.save()
-            user.save()
+            Friend.objects(owner=sender).update_one(
+                pull__list_sent_request=recevied,
+                push__list_friend=recevied,
+                inc__friends=1)
+            Friend.objects(owner=recevied).update_one(
+                pull__list_request=sender,
+                push__list_friend=sender,
+                inc__friends=1)
+            
             self.res = response.sucess()
         except DoesNotExist:
             self.res = response.user_is_invalid()
         except Exception:
+            raise Exception
+
             self.res = response.internal_server()
         return jsonify(self.res)
 
+
 class BlockApi(Resource):
     pass
+
 
 class ListBlockApi(Resource):
     pass
@@ -80,4 +78,3 @@ class ListBlockApi(Resource):
 
 class ListFriendApi(Resource):
     pass
-

@@ -18,6 +18,9 @@ class Test:
         return self.a
 
 
-a = [{"a": 1, 'b' : 2}, {"a" : 2}]
-a.remove({"a" :1})
-print(a)
+a = [1,2,2,2,3]
+if 2 in a:
+    a.remove(2)
+print (a)
+
+"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDI0OTgzMzcsIm5iZiI6MTYwMjQ5ODMzNywianRpIjoiMjk3MDdkYTktZmY0OC00YjUzLWE2MDQtODVmNTg1MTlkMWJiIiwiZXhwIjoxNjAzMTAzMTM3LCJpZGVudGl0eSI6IjVmNzgwMTFkZWYwNTdiMTAxNWZhYTM4MCIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.4mExjgjWMIqySvFxNY3LOuZ6JellIAHMJ6BNm1NHB4I"
