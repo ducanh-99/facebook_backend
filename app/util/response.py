@@ -2,6 +2,8 @@ class HaveDoneVerify(Exception):
     pass
 class ParameterValueInvalid(Exception):
     pass
+class AlreadyFriend(Exception):
+    pass
 
 def internal_server():
     sucess = {
@@ -97,6 +99,11 @@ def action_done_previously():
     }
     return res
 
+def were_friend():
+    res = {
+        "code" : 1011,
+        "message" : "You are already friends"
+    }
 
 def post_is_not_exit():
     res = {

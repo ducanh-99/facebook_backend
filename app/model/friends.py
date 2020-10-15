@@ -5,18 +5,20 @@ from mongoengine import *
 
 
 class UserEmbedd(gj.EmbeddedDocument):
-    user = ReferenceField('User')
+    user = ObjectIdField()
+    username = StringField()
 
 
 class Friend(gj.Document):
-    owner = ReferenceField('User')
+    owner = ObjectIdField(required=True)
     friends = IntField(default=0)
-    list_friend = ListField(ReferenceField('User'))
+    list_friend = ListField(EmbeddedDocumentField(UserEmbedd))
     requests = IntField(default=0)
-    list_request = ListField(ReferenceField('User'))
-    list_sent_request = ListField(ReferenceField('User'))
+    list_request = ListField(EmbeddedDocumentField(UserEmbedd))
+    sent_request = IntField(default=0)
+    list_sent_request = ListField(EmbeddedDocumentField(UserEmbedd))
     blocks = IntField(default=0)
-    list_block = ListField(ReferenceField('User'))
+    list_block = ListField(EmbeddedDocumentField(UserEmbedd))
     creation_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)
 

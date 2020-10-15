@@ -16,6 +16,7 @@ class TestApi(Resource):
     def get(self):
         test = Test.objects().first()
         photo = test.test.read()
+        print(photo)
         content_type = test.test.content_type
         return Response(photo,content_type=content_type)
 
