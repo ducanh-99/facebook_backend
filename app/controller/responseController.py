@@ -57,6 +57,5 @@ def update_post(post, body):
 def like_convert(post):
     res = {}
     res = response.sucess()
-    res["data"] = {}
-    res["data"]["like"] = post.like
+    res["like"] = post.like
     return res

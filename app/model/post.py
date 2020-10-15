@@ -4,29 +4,21 @@ import datetime
 
 from app.model.image import Image
 from app.model.video import Video
+from app.model.userEmbedd import UserEmbedd
 
 
 class Post(gj.Document):
     described = StringField(required=True)
-    like = IntField(required=True)
-    comment = IntField(required=True)
-    is_liked = BooleanField()
-    images = ListField(ReferenceField("Image"), reverse_delete_rule=PULL)
-    video = ListField(ReferenceField('Video'), reverse_delete_rule=PULL)
-    owner = ReferenceField('User')
-    owner_avatar = FileField()
-    owner_name = StringField(required=True)
+    like = IntField(required=True, default=0)
+    comment = IntField(required=True, default=0)
+    is_liked = BooleanField(default=False)
+    images = ListField(FileField())
+    video = ListField(FileField())
+    owner = EmbeddedDocumentField(UserEmbedd)
     state = StringField()
 
     creation_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)
-
-    def set_default(self, user):
-        self.like = 0
-        self.comment = 0
-        self.is_liked = False
-        self.owner_name = user.username
-        self.owner_avatar = user.avatar
 
     def save(self, *args, **kwargs):
         if not self.creation_date:

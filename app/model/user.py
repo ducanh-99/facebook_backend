@@ -18,9 +18,6 @@ class User(gj.Document):
     avatar = FileField(default=None)
     uuid = StringField(required=True)
     verify = BooleanField()
-    posts = ListField(ReferenceField(
-        'Post', reverse_delete_rule=PULL))
-    friends = IntField(default=0)
     creation_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)
 
@@ -46,4 +43,3 @@ class User(gj.Document):
         return super(User, self).save(*args, **kwargs)
 
 
-User.register_delete_rule(Post, 'owner', CASCADE)

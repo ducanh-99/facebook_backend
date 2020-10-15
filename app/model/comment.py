@@ -8,12 +8,13 @@ from app.model.post import Post
 
 
 class Content(gj.EmbeddedDocument):
-    poster = ReferenceField('User')
+    poster = ObjectIdField('User')
+    poster_name = StringField()
     index = IntField()
     comment = StringField()
 
 class Comment(gj.Document):
-    post = ReferenceField(Post, reverse_delete_rule=CASCADE)
+    post = LazyReferenceField(Post, reverse_delete_rule=CASCADE)
     content = ListField(EmbeddedDocumentField(Content))
     creation_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)

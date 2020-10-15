@@ -16,13 +16,13 @@ class LikeApi(Resource):
     def get(self, id):
         try:
             user_id = get_jwt_identity()
-            post = Post.objects.get(id=id)
-            post.like += 1
-            post.save()
+            post = Post.objects(id=id).first()
+            post.update(inc__like=1)
             self.res = resCon.like_convert(post)
         except DoesNotExist:
             self.res = response.post_is_not_exit()
         except Exception:
+            raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
 
@@ -34,11 +34,10 @@ class DislikeApi(Resource):
     def get(self, id):
         try:
             user_id = get_jwt_identity()
-            post = Post.objects.get(id=id)
-            post.like -= 1
+            post = Post.objects(id=id).first()
             if post.like < 0:
                 raise Exception
-            post.save()
+            post.update(dec__like=1)
             self.res = resCon.like_convert(post)
         except DoesNotExist:
             self.res = response.post_is_not_exit()

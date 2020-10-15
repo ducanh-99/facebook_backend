@@ -11,6 +11,14 @@ import app.controller.responseController as resCon
 import app.util.response as response
 
 
+def get_user_name(user):
+    res = {
+        "user": user["id"],
+        "username": user["username"]
+    }
+    return res
+
+
 class PostsApi(Resource):
     res = {}
 
@@ -28,16 +36,16 @@ class PostsApi(Resource):
         try:
             user_id = get_jwt_identity()
             body = request.get_json()
-            user = User.objects.get(id=user_id)
-            post = Post(**body, owner=user)
-            post.set_default(user)
+            user = User.objects(id=user_id).only('username').first()
+            owner = get_user_name(user)
+            post = Post(**body, owner=owner)
             post.save()
-            comment = Comment(post=post).save()
-            user.update(push__posts=post)
+            Comment(post=post).save()
             return {"mes": "ok"}, 200
         except DoesNotExist:
             self.res = response.user_is_not_validated()
         except Exception as e:
+            raise e
             self.res = response.internal_server()
         return jsonify(self.res)
 
@@ -49,14 +57,13 @@ class PostApi(Resource):
     def put(self, id):
         try:
             user_id = get_jwt_identity()
-            post = Post.objects.get(id=id, owner=user_id)
+            post = Post.objects.get(id=id)
             body = request.get_json()
-            post.is_block = False
-            post = resCon.update_post(post, body)
+            # post = resCon.update_post(post, body)
             # post["comment"] = 5
-            post.save()
+            post.update(**body)
             self.res = response.sucess()
-            self.res = resCon.format_response_post(self.res, body)
+            self.res = resCon.response_value(self.res, body)
         except DoesNotExist:
             self.res = response.post_is_not_exit()
         except Exception as e:
@@ -68,7 +75,7 @@ class PostApi(Resource):
     def delete(self, id):
         try:
             user_id = get_jwt_identity()
-            post = Post.objects.get(id=id, owner=user_id)
+            post = Post.objects.get(id=id)
             post.delete()
             self.res = response.sucess()
         except DoesNotExist:
@@ -84,8 +91,10 @@ class PostApi(Resource):
             self.res = response.internal_server()
         return jsonify(self.res)
 
+
 class ReportPostApi(Resource):
     pass
+
 
 class GetNewItemApi(Resource):
     pass
