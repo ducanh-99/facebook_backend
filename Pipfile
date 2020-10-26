@@ -4,6 +4,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
+autopep8 = "*"
 
 [packages]
 gunicorn = "*"
@@ -14,8 +16,11 @@ Flask = "*"
 Flask-RESTful = "*"
 Flask-Bcrypt = "*"
 Flask-JWT-Extended = "*"
-pymongo = {extras = ["srv"], version = "*"}
 pillow = "*"
 
 [requires]
 python_version = "3.8"
+
+[packages.pymongo]
+extras = [ "srv",]
+version = "*"

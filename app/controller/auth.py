@@ -15,7 +15,14 @@ import app.util.response as response
 
 class SignupApi(Resource):
     res = {}
-
+    """
+    [summary]
+    Truyền vào body 
+    phonenumber
+    password
+    firstname
+    lastname
+    """
     def post(self):
         try:
             body = request.get_json()
@@ -26,12 +33,12 @@ class SignupApi(Resource):
             self.res = response.sucess()
             self.res = response_value(self.res, data)
             user.save()
-            friend = Friend(owner=user).save()
+            Friend(owner=user).save()
         except FieldDoesNotExist:
             self.res = response.parameter_not_enough()
         except NotUniqueError:
             self.res = response.user_existed()
-        except Exception as e:
+        except Exception :
             self.res = response.internal_server()
         return jsonify(self.res)
 
@@ -62,7 +69,7 @@ class LoginApi(Resource):
             self.res["data"]["token"] = access_token
         except (UnauthorizedError, DoesNotExist):
             self.res = response.user_is_not_validated()
-        except Exception as e:
+        except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
 

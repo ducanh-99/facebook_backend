@@ -6,6 +6,7 @@ from app.controller.profileController import AvtUploadApi, AvatarApi
 from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
 from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi
+from app.controller.searchController import SearchApi
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -29,3 +30,5 @@ def initialize_routes(api):
     api.add_resource(ConfirmApi, "/api/friend/confirm/<id>")
     api.add_resource(RequestApi, "/api/friend/request/<id>")
     api.add_resource(ListRequestApi, "/api/friend/listrequest/<id>")
+    # Search
+    api.add_resource(SearchApi, "/api/search")
