@@ -20,13 +20,12 @@ class PostCommentApi(Resource):
         try:
             # prepare data
             user_id = get_jwt_identity()
-            user = User.objects.get(id=user_id)
             body = request.get_json()
             comment = Comment.objects.get(post=id)
             index = 0
             if 0 != len(comment.content):
                 index = comment.content[-1]["index"] + 1
-            content = Content(poster=user, index=index,
+            content = Content(poster=user_id, index=index,
                               comment=body["comment"])
             # save data
             comment.content.append(content)
@@ -48,7 +47,7 @@ class PostCommentApi(Resource):
             body = request.get_json()
             comment = Comment.objects.get(post=id)
             for i, value in enumerate(comment.content):
-                if body["index"] == value["index"] and str(value["poster"]["id"]) == user_id:
+                if body["index"] == value["index"] and str(value["poster"]) == user_id:
                     comment.content[i]["comment"] = body["comment"]
                     break
             comment.save()
@@ -67,7 +66,7 @@ class PostCommentApi(Resource):
             body = request.get_json()
             comment = Comment.objects.get(post=id)
             for i in comment.content:
-                if body["index"] == i["index"] and str(i["poster"]["id"]) == user_id:
+                if body["index"] == i["index"] and str(i["poster"]) == user_id:
                     comment.content.remove(i)
                     break
             comment.save()

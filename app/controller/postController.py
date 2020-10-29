@@ -24,10 +24,9 @@ class PostsApi(Resource):
 
     def get(self):
         try:
-            query = Post.objects()
             posts = Post.objects().to_json()
             return Response(posts, mimetype="application/json", status=200)
-        except Exception as e:
+        except Exception :
             self.res = response.internal_server()
             return jsonify(self.res)
 
@@ -41,10 +40,10 @@ class PostsApi(Resource):
             post = Post(**body, owner=owner)
             post.save()
             Comment(post=post).save()
-            return {"mes": "ok"}, 200
+            return Response(post.to_json(), mimetype="application/json", status=200)
         except DoesNotExist:
             self.res = response.user_is_not_validated()
-        except Exception as e:
+        except Exception :
             raise e
             self.res = response.internal_server()
         return jsonify(self.res)
@@ -75,7 +74,7 @@ class PostApi(Resource):
     def delete(self, id):
         try:
             user_id = get_jwt_identity()
-            post = Post.objects.get(id=id)
+            post = Post.objects(id=id).first()
             post.delete()
             self.res = response.sucess()
         except DoesNotExist:
@@ -84,10 +83,10 @@ class PostApi(Resource):
 
     def get(self, id):
         try:
-            post = Post.objects.get(id=id).to_json()
+            post = Post.objects(id=id).first().to_json()
             self.res = response.sucess()
             self.res = resCon.format_response_post(self.res, post)
-        except Exception as e:
+        except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
 

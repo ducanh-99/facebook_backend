@@ -59,7 +59,7 @@ class LoginApi(Resource):
             authorized = user.check_password(body.get('password'))
             if not authorized:
                 raise UnauthorizedError
-            expires = datetime.timedelta(days=7)
+            expires = datetime.timedelta(days=365)
             access_token = create_access_token(
                 identity=str(user.id), expires_delta=expires)
 
