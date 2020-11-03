@@ -28,6 +28,8 @@ class User(gj.Document):
         self.username = self.firstname + " " + self.lastname
         self.uuid = str(uuid.uuid4())
         self.verify = False
+        with open('app/model/default.jpg', 'rb') as fd:
+            self.avatar.put(fd, content_type = 'image/jpeg')
         # self.blocks = []
 
     def check_password(self, password):
