@@ -4,7 +4,7 @@ from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
 import json
 
-from app.model.friends import Friend, Request
+from app.model.friends import Friend
 from app.model.user import User
 import app.controller.responseController as resCon
 import app.util.response as response
@@ -74,7 +74,6 @@ class ConfirmApi(Resource):
                 for i in sender_friend.list_sent_request:
                     print(i["user"], recevied_id)
                     if str(i["user"]) == str(recevied_id):
-                        print("dung the")
                         sender_friend.update(
                             pull__list_sent_request=i,
                             push__list_friend=i,
@@ -100,7 +99,27 @@ class ConfirmApi(Resource):
 
 
 class BlockApi(Resource):
-    pass
+    res = {}
+    @jwt_required
+    def get(self, id):
+        try:
+            user_id = get_jwt_identity()
+            blocked_id = id
+            if blocked_id != user_id:
+                user_friend = Friend.objects(owner=user_id).first()
+                blocked_friend = Friend.objects(owner=blocked_id).first()
+                for i in user_friend.list_friend:
+                    if str(i["user"]) == str(blocked_id):
+                        user_friend.update()
+                for i in blocked_friend.list_friend:
+                    if str(i["user"]) == str(user_id):
+                        blocked_friend.update()
+            self.res = response.sucess()
+            self.res["block_id"] = str(blocked_id) 
+        except Exception:
+            self.res = response.internal_server()
+        return jsonify(self.res)
+
 
 
 class ListFriendApi(Resource):

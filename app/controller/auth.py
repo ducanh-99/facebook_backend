@@ -33,12 +33,13 @@ class SignupApi(Resource):
             self.res = response.sucess()
             self.res = response_value(self.res, data)
             user.save()
-            Friend(owner=user).save()
+            Friend(owner=user["id"]).save()
         except FieldDoesNotExist:
             self.res = response.parameter_not_enough()
         except NotUniqueError:
             self.res = response.user_existed()
         except Exception :
+            raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
 

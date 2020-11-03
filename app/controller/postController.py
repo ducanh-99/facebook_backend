@@ -6,6 +6,7 @@ import json
 
 from app.model.post import Post
 from app.model.user import User
+from app.model.like import Like
 from app.model.comment import Comment
 import app.controller.responseController as resCon
 import app.util.response as response
@@ -22,13 +23,23 @@ def get_user_name(user):
 class PostsApi(Resource):
     res = {}
 
+    @jwt_required
     def get(self):
         try:
-            posts = Post.objects().to_json()
-            return Response(posts, mimetype="application/json", status=200)
+            user_id = get_jwt_identity()
+            posts = Post.objects()
+            likes = Like.objects()
+            for i in len(posts):
+                for j in likes[i]["user_like"]:
+                    print("ok")
+                    if user_id == j["user"]:
+                        print("ok")
+                
+            return Response(posts.to_json(), mimetype="application/json", status=200)
         except Exception :
+            raise Exception
             self.res = response.internal_server()
-            return jsonify(self.res)
+        return jsonify(self.res)
 
     @jwt_required
     def post(self):
