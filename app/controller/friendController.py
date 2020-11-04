@@ -130,8 +130,7 @@ class ListRequestApi(Resource):
     @jwt_required
     def get(self, id):
         user_id = get_jwt_identity()
-        user = User.objects.get(id=user_id)
-        friend_request = Friend.objects.get(owner=user).list_request
+        friend_request = Friend.objects.get(owner=user_id).list_request
         return jsonify(friend_request)
 
 

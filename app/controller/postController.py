@@ -29,11 +29,11 @@ class PostsApi(Resource):
             user_id = get_jwt_identity()
             posts = Post.objects()
             likes = Like.objects()
-            for i in len(posts):
-                for j in likes[i]["user_like"]:
-                    print("ok")
-                    if user_id == j["user"]:
-                        print("ok")
+            # for i in len(posts):
+            #     for j in likes[i]["user_like"]:
+            #         print("ok")
+            #         if user_id == j["user"]:
+            #             print("ok")
                 
             return Response(posts.to_json(), mimetype="application/json", status=200)
         except Exception :
