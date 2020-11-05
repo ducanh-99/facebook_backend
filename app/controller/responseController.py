@@ -25,6 +25,10 @@ def format_response_post(response, data):
         return response
     except ValueError as e:
         print(e)
+def convert_object_to_dict(data):
+    data = data.to_json()
+    data = json.loads(data)
+    return data
 
 
 def convert_string_to_objectId(data):

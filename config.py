@@ -9,6 +9,6 @@ def config(app):
     JWTManager(app)
     connect(
         db='fakebook',
-        host='mongodb+srv://anhndvnist:ducanh99@cluster0.znpcr.mongodb.net'
-        # host='mongodb://127.0.0.1:27017'
+        # host='mongodb+srv://anhndvnist:ducanh99@cluster0.znpcr.mongodb.net'
+        host='mongodb://127.0.0.1:27017'
     )

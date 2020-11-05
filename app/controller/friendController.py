@@ -6,6 +6,7 @@ import json
 
 from app.model.friends import Friend
 from app.model.user import User
+from app.model.userEmbedd import UserEmbedd
 import app.controller.responseController as resCon
 import app.util.response as response
 
@@ -18,6 +19,19 @@ def get_user_name(user):
     return res
 
 
+def list_return(res, friend_anything):
+    """
+    docstring
+    """
+    data = []
+    for i in friend_anything:
+        data.append(resCon.convert_object_to_dict(i))
+    res = response.sucess()
+    res["data"] = data
+    res["total"] = len(data)
+    return res
+
+
 class RequestApi(Resource):
     res = {}
 
@@ -27,7 +41,7 @@ class RequestApi(Resource):
             sender_id = get_jwt_identity()
             recevied_id = id
             # Friend(owner=id).save()
-            sender_friend = Friend.objects(owner=sender_id)
+            sender_friend = Friend.objects(owner=sender_id).first()
             for i in sender_friend.list_friend:
                 if i["user"] == recevied_id:
                     raise response.AlreadyFriend
@@ -60,6 +74,7 @@ class RecommendFriendApi(Resource):
 
 class ConfirmApi(Resource):
     res = {}
+    check_request = False
 
     @jwt_required
     def get(self, id):
@@ -72,7 +87,7 @@ class ConfirmApi(Resource):
                 sender_friend = Friend.objects(owner=sender_id).first()
                 recevied_friend = Friend.objects(owner=recevied_id).first()
                 for i in sender_friend.list_sent_request:
-                    print(i["user"], recevied_id)
+                    print(i)
                     if str(i["user"]) == str(recevied_id):
                         sender_friend.update(
                             pull__list_sent_request=i,
@@ -80,6 +95,7 @@ class ConfirmApi(Resource):
                             dec__sent_request=1,
                             inc__friends=1
                         )
+                        self.check_request = True
                 for i in recevied_friend.list_request:
                     if str(i["user"]) == str(sender_id):
                         recevied_friend.update(
@@ -88,51 +104,108 @@ class ConfirmApi(Resource):
                             dec__requests=1,
                             inc__friends=1
                         )
-            self.res = response.sucess()
+                        self.check_request = True
+            if self.check_request:
+                self.res = response.sucess()
+            else:
+                raise Exception
         except DoesNotExist:
             self.res = response.user_is_invalid()
         except Exception:
-            raise Exception
-
             self.res = response.internal_server()
         return jsonify(self.res)
 
 
 class BlockApi(Resource):
     res = {}
+
     @jwt_required
-    def get(self, id):
+    def get(self, block_id):
         try:
             user_id = get_jwt_identity()
-            blocked_id = id
-            if blocked_id != user_id:
+            if block_id != user_id:
+                user = User.objects(id=user_id).only('username').first()
+                blocker = User.objects(id=block_id).only('username').first()
+
                 user_friend = Friend.objects(owner=user_id).first()
-                blocked_friend = Friend.objects(owner=blocked_id).first()
+                blocker_friend = Friend.objects(owner=block_id).first()
+                blocker_embedded = get_user_name(blocker)
                 for i in user_friend.list_friend:
-                    if str(i["user"]) == str(blocked_id):
-                        user_friend.update()
-                for i in blocked_friend.list_friend:
+                    if str(i["user"]) == str(block_id):
+                        user_friend.update(pull__list_friend=i, dec__friends=1)
+                for i in blocker_friend.list_friend:
                     if str(i["user"]) == str(user_id):
-                        blocked_friend.update()
+                        blocker_friend.update(pull__list_friend=i, dec__friends=1)
+                user_friend.update(push__list_block=blocker_embedded, inc__blocks=1)
             self.res = response.sucess()
-            self.res["block_id"] = str(blocked_id) 
+            self.res["block_id"] = str(block_id)
+        except Exception:
+            raise Exception
+            self.res = response.internal_server()
+        return jsonify(self.res)
+
+
+class ListFriendApi(Resource):
+    res = {}
+
+    def get(self, user_id):
+        try:
+            list_friend = Friend.objects.get(owner=user_id).list_friend
+            self.res = list_return(self.res, list_friend)
+        except DoesNotExist:
+            self.res = response.user_is_invalid()
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
 
 
-
-class ListFriendApi(Resource):
-    pass
-
-
 class ListRequestApi(Resource):
+    res = {}
+
     @jwt_required
-    def get(self, id):
-        user_id = get_jwt_identity()
-        friend_request = Friend.objects.get(owner=user_id).list_request
-        return jsonify(friend_request)
+    def get(self):
+        try:
+            user_id = get_jwt_identity()
+            list_request = Friend.objects.get(owner=user_id).list_request
+            self.res = list_return(self.res, list_request)
+        except DoesNotExist:
+            self.res = response.user_is_invalid()
+        except Exception:
+            raise Exception
+            self.res = response.internal_server()
+        return jsonify(self.res)
+
+
+class ListSentRequestApi(Resource):
+    res = {}
+
+    @jwt_required
+    def get(self):
+        try:
+            user_id = get_jwt_identity()
+            list_sent_request = Friend.objects.get(
+                owner=user_id).list_sent_request
+            self.res = list_return(self.res, list_sent_request)
+        except DoesNotExist:
+            self.res = response.user_is_invalid()
+        except Exception:
+            raise Exception
+            self.res = response.internal_server()
+        return jsonify(self.res)
 
 
 class ListBlockApi(Resource):
-    pass
+    res = {}
+
+    @jwt_required
+    def get(self):
+        try:
+            user_id = get_jwt_identity()
+            list_block = Friend.objects.get(owner=user_id).list_block
+            self.res = list_return(self.res, list_block)
+        except DoesNotExist:
+            self.res = response.user_is_invalid()
+        except Exception:
+            raise Exception
+            self.res = response.internal_server()
+        return jsonify(self.res)

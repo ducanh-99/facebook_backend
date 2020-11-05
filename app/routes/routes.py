@@ -5,8 +5,9 @@ from app.controller.postController import PostApi, PostsApi
 from app.controller.profileController import AvtUploadApi, AvatarApi
 from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
-from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi
+from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi
 from app.controller.searchController import SearchApi
+
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -29,6 +30,11 @@ def initialize_routes(api):
     # friends
     api.add_resource(ConfirmApi, "/api/friend/confirm/<id>")
     api.add_resource(RequestApi, "/api/friend/request/<id>")
-    api.add_resource(ListRequestApi, "/api/friend/listrequest/<id>")
+    api.add_resource(BlockApi, '/api/friend/block/<block_id>')
+
+    api.add_resource(ListRequestApi, "/api/friend/listrequest")
+    api.add_resource(ListFriendApi, '/api/friend/list_friend/<user_id>')
+    api.add_resource(ListBlockApi, '/api/friend/list_block')
+    api.add_resource(ListSentRequestApi, '/api/friend/list_sent_request')
     # Search
     api.add_resource(SearchApi, "/api/search")
