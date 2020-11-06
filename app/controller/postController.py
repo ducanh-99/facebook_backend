@@ -19,6 +19,17 @@ def get_user_name(user):
     }
     return res
 
+def list_return(res, friend_anything):
+    """
+    docstring
+    """
+    data = []
+    for i in friend_anything:
+        data.append(resCon.convert_object_to_dict(i))
+    res = response.sucess()
+    res["data"] = data
+    res["total"] = len(data)
+    return res
 
 class PostsApi(Resource):
     res = {}
@@ -100,6 +111,24 @@ class PostApi(Resource):
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
+
+class UserPostsApi(Resource):
+    res = {}
+    @jwt_required
+    def get(self, user_id):
+        try:
+            posts = Post.objects()
+            data = []
+            for post in posts:
+                if str(post.owner.user) == str (user_id):
+                    data.append(resCon.convert_object_to_dict(post))
+            return jsonify(data)
+        except Exception:
+            self.res = response.internal_server()
+        return jsonify(self.res)
+        
+
+        
 
 
 class ReportPostApi(Resource):
