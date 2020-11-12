@@ -1,7 +1,7 @@
 from app.controller.test import TestApi
 from app.controller.auth import SignupApi, LoginApi, LogoutApi
 from app.controller.verifyController import GetVerifyApi
-from app.controller.postController import PostApi, PostsApi, UserPostsApi
+from app.controller.postController import PostApi, PostsApi, UserPostsApi, VideoRetrievalApi, ImagesRetrievalApi
 from app.controller.profileController import AvtUploadApi, AvatarApi
 from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
@@ -20,6 +20,9 @@ def initialize_routes(api):
     api.add_resource(PostsApi, '/api/post')
     api.add_resource(PostApi, '/api/post/<id>')
     api.add_resource(UserPostsApi, '/api/post/user/<user_id>')
+
+    api.add_resource(VideoRetrievalApi, '/api/video/<post_id>')
+    api.add_resource(ImagesRetrievalApi, '/api/post/<post_id>/<image_id>')
     
     # avtar
     api.add_resource(AvtUploadApi, '/api/upload_avt')

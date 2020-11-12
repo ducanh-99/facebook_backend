@@ -4,6 +4,8 @@ class ParameterValueInvalid(Exception):
     pass
 class AlreadyFriend(Exception):
     pass
+class AlreadyLiked(Exception):
+    pass
 
 def internal_server():
     sucess = {
@@ -104,6 +106,13 @@ def were_friend():
         "code" : 1011,
         "message" : "You are already friends"
     }
+
+def user_was_like_post():
+    res = {
+        "code" : 1012,
+        "message" : "User was like the post"
+    }
+    return res
 
 def post_is_not_exit():
     res = {

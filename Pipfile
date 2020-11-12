@@ -16,10 +16,7 @@ Flask-RESTful = "*"
 Flask-Bcrypt = "*"
 Flask-JWT-Extended = "*"
 Pillow = "*"
+pymongo = "*"
 
 [requires]
 python_version = "3.8"
-
-[packages.pymongo]
-extras = [ "srv",]
-version = "*"

@@ -1,7 +1,15 @@
 import json
 import app.util.response as response
+from app.model.user import User
 from bson import ObjectId
 
+def convert_user_object_to_user_embed(user_id):
+    user = User.objects(id=user_id).only('username').first()
+    res = {
+        "user" : user.id,
+        "username" : user.username,
+    }
+    return res
 
 def response_value(response, data):
     try:
