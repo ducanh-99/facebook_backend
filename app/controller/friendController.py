@@ -27,7 +27,7 @@ def list_return(res, friend_anything):
     for i in friend_anything:
         data.append(resCon.convert_object_to_dict(i))
     res = response.sucess()
-    res["data"] = data
+    res["data"] = data[::-1]
     res["total"] = len(data)
     return res
 

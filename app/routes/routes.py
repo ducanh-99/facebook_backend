@@ -24,7 +24,7 @@ def initialize_routes(api):
     api.add_resource(VideoRetrievalApi, '/api/video/<post_id>')
     api.add_resource(ImagesRetrievalApi, '/api/post/<post_id>/<image_id>')
     
-    # avtar
+    # avatar
     api.add_resource(AvtUploadApi, '/api/upload_avt')
     api.add_resource(AvatarApi, '/api/get_avt/<id>')
     # like
