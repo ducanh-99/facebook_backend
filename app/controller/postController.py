@@ -48,8 +48,8 @@ class PostsApi(Resource):
             # check is_like
             for index, post in enumerate(posts):
                 like = Like.objects.get(post=post["id"])
-                is_like = like.is_like(user_id)
-                posts[index]["is_like"] = is_like
+                is_liked = like.is_liked(user_id)
+                posts[index]["is_liked"] = is_liked
             # return lastest
             return jsonify(posts[::-1])
         except Exception:
@@ -123,12 +123,12 @@ class PostApi(Resource):
     def get(self, id):
         try:
             user_id = get_jwt_identity()
-            post = Post.objects.get(id=id)
+            post = Post.objects.get(id=id).to_json()
             post = json.loads(post)
 
             like = Like.objects.get(post=post["id"])
-            is_like = like.is_like(user_id)
-            post["is_like"] = is_like
+            is_liked = like.is_liked(user_id)
+            post["is_liked"] = is_liked
 
             self.res = response.sucess()
             self.res["data"] = post
@@ -150,8 +150,12 @@ class UserPostsApi(Resource):
             data = []
             for post in posts:
                 if str(post.owner.user) == str(user_id):
-                    data.append(resCon.convert_object_to_dict(post))
-            return jsonify(data)
+                    post = resCon.convert_object_to_dict(post)
+                    like = Like.objects.get(post=post["id"])
+                    is_liked = like.is_liked(user_id)
+                    post["is_liked"] = is_liked
+                    data.append(post)
+            return jsonify(data[::-1])
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
