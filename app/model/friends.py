@@ -1,7 +1,7 @@
 
 import mongoengine_goodjson as gj
 import datetime
-from mongoengine import *
+from mongoengine import ObjectIdField, StringField, IntField, ListField, EmbeddedDocumentField, DateTimeField
 
 
 class UserEmbedd(gj.EmbeddedDocument):
@@ -28,4 +28,30 @@ class Friend(gj.Document):
         self.modified_date = datetime.datetime.now()
         return super(Friend, self).save(*args, **kwargs)
 
+    def find_user(self, a_list, user_id):
+        for i in a_list:
+            if str(i["user"]) == str(user_id):
+                return True
+        return False
 
+    def is_blocked(self, user_id):
+        return self.find_user(a_list=self.list_block, user_id=user_id)
+
+    def is_friend(self, user_id):
+        return self.find_user(a_list=self.list_friend, user_id=user_id)
+
+    def reject_request_recevied(self, user_id):
+        for i in self.list_request:
+            if str(i["user"]) == str(user_id):
+                self.update(
+                    pull__list_request=i,
+                    dec__request=1,
+                )
+
+    def reject_request_sender(self, user_id):
+        for i in self.list_sent_request:
+            if str(i["user"]) == str(user_id):
+                self.update(
+                    pull__list_sent_request=i,
+                    dec__sent_request=1,
+                )

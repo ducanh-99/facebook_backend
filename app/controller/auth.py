@@ -23,6 +23,7 @@ class SignupApi(Resource):
     firstname
     lastname
     """
+
     def post(self):
         try:
             body = request.get_json()
@@ -38,7 +39,7 @@ class SignupApi(Resource):
             self.res = response.parameter_not_enough()
         except NotUniqueError:
             self.res = response.user_existed()
-        except Exception :
+        except Exception:
             raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
@@ -46,6 +47,7 @@ class SignupApi(Resource):
 
 class LoginApi(Resource):
     res = {}
+
     def get(self):
         user = User.objects()
         user_id = []
@@ -53,6 +55,7 @@ class LoginApi(Resource):
             user_id.append(i["id"])
         print(user_id)
         return jsonify(response.sucess())
+
     def post(self):
         try:
             body = request.get_json()
@@ -87,6 +90,25 @@ class LogoutApi(Resource):
             self.res = response.internal_server()
         return jsonify(self.res)
 
+
 class ChangePasswordApi(Resource):
-    pass
-        
+    
+    @jwt_required
+    def post(self):
+        res = {}
+        try:
+            user_id = get_jwt_identity()
+            body = request.get_json()
+            user = User.objects.get(id=user_id)
+            authorized = user.check_password(body.get('old_password'))
+            if not authorized:
+                raise UnauthorizedError
+            user.password = body.get("new_password")
+            user.hash_password()
+            user.save()
+            res = response.sucess()
+        except  UnauthorizedError:
+            res = response.user_is_not_validated()
+        except Exception:
+            res = response.internal_server()
+        return jsonify(res)

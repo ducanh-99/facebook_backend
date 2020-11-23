@@ -16,17 +16,30 @@ class PostCommentApi(Resource):
     res = {}
 
     @jwt_required
-    def get(self, id):
+    def get(self, post_id):
+        res = {}
+        try:
+            comment = Comment.objects.get(post=post_id)
+            return Response(comment.to_json(), mimetype="application/json")
+        except DoesNotExist:
+            res = response.post_is_not_exit()
+        except Exception:
+            res = response.internal_server()
+        return jsonify(res)
+
+    @jwt_required
+    def post(self, post_id):
         try:
             # prepare data
             user_id = get_jwt_identity()
             body = request.get_json()
-            comment = Comment.objects.get(post=id)
+            user = User.objects.get(id=user_id)
+            comment = Comment.objects.get(post=post_id)
             index = 0
             if 0 != len(comment.content):
                 index = comment.content[-1]["index"] + 1
             content = Content(poster=user_id, index=index,
-                              comment=body["comment"])
+                              comment=body["comment"], poster_name=user.username)
             # save data
             comment.content.append(content)
             self.res = response.sucess()
@@ -41,11 +54,11 @@ class PostCommentApi(Resource):
         return jsonify(self.res)
 
     @jwt_required
-    def put(self, id):
+    def put(self, post_id):
         try:
             user_id = get_jwt_identity()
             body = request.get_json()
-            comment = Comment.objects.get(post=id)
+            comment = Comment.objects.get(post=post_id)
             for i, value in enumerate(comment.content):
                 if body["index"] == value["index"] and str(value["poster"]) == user_id:
                     comment.content[i]["comment"] = body["comment"]
@@ -60,11 +73,11 @@ class PostCommentApi(Resource):
         return jsonify(self.res)
 
     @jwt_required
-    def delete(self, id):
+    def delete(self, post_id):
         try:
             user_id = get_jwt_identity()
             body = request.get_json()
-            comment = Comment.objects.get(post=id)
+            comment = Comment.objects.get(post=post_id)
             for i in comment.content:
                 if body["index"] == i["index"] and str(i["poster"]) == user_id:
                     comment.content.remove(i)
@@ -75,9 +88,21 @@ class PostCommentApi(Resource):
         except DoesNotExist:
             self.res = response.post_is_not_exit()
         except Exception:
+            raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
 
 
 class SetCommentApi(Resource):
-    pass
+
+    @jwt_required
+    def get(self, post_id):
+        res = {}
+        try:
+            comment = Comment.objects.get(post=post_id)
+            return Response(comment.to_json(), mimetype="application/json")
+        except DoesNotExist:
+            res = response.post_is_not_exit()
+        except Exception:
+            res = response.internal_server()
+        return jsonify(res)

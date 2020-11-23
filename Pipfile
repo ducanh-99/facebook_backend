@@ -17,6 +17,7 @@ Flask-Bcrypt = "*"
 Flask-JWT-Extended = "*"
 Pillow = "*"
 pymongo = "*"
+Flask-SocketIO = "*"
 
 [requires]
 python_version = "3.8"

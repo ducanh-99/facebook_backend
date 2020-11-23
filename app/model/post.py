@@ -1,10 +1,8 @@
 import mongoengine_goodjson as gj
-from mongoengine import *
-import datetime
+from mongoengine import FileField, StringField, IntField, EmbeddedDocumentField
 
-from app.model.image import Image
-from app.model.video import Video
 from app.model.userEmbedd import UserEmbedd
+from app.model.base_db import Base
 
 
 class Images(gj.EmbeddedDocument):
@@ -14,7 +12,7 @@ class Images(gj.EmbeddedDocument):
     image4 = FileField(default=None)
 
 
-class Post(gj.Document):
+class Post(Base):
     described = StringField(required=True)
     like = IntField(required=True, default=0)
     comment = IntField(required=True, default=0)
@@ -22,14 +20,7 @@ class Post(gj.Document):
     video = FileField(default=None)
     owner = EmbeddedDocumentField(UserEmbedd)
     state = StringField()
-    creation_date = DateTimeField()
-    modified_date = DateTimeField(default=datetime.datetime.now)
-
-    def save(self, *args, **kwargs):
-        if not self.creation_date:
-            self.creation_date = datetime.datetime.now()
-        self.modified_date = datetime.datetime.now()
-        return super(Post, self).save(*args, **kwargs)
+    
 
     def is_like(self, user_id):
         # like = Like.objects.get(post=self.id)
@@ -37,5 +28,3 @@ class Post(gj.Document):
 
 
 
-Post.register_delete_rule(Image, "post", CASCADE)
-Post.register_delete_rule(Video, "post", CASCADE)
