@@ -17,15 +17,15 @@ class PostCommentApi(Resource):
 
     @jwt_required
     def get(self, post_id):
-        res = {}
         try:
             comment = Comment.objects.get(post=post_id)
-            return Response(comment.to_json(), mimetype="application/json")
+            self.res = response.sucess()
+            self.res["data"] = json.loads(comment.to_json())
         except DoesNotExist:
-            res = response.post_is_not_exit()
+            self.res = response.post_is_not_exit()
         except Exception:
-            res = response.internal_server()
-        return jsonify(res)
+            self.res = response.internal_server()
+        return jsonify(self.res)
 
     @jwt_required
     def post(self, post_id):
