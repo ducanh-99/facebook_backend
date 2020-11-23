@@ -1,7 +1,7 @@
 
 import mongoengine_goodjson as gj
 import datetime
-from mongoengine import ObjectIdField, StringField, IntField, EmbeddedDocumentField, ListField, LazyReferenceField, CASCADE
+from mongoengine import ObjectIdField, StringField, IntField, EmbeddedDocumentField, ListField, LazyReferenceField, CASCADE, DateTimeField
 
 from app.model.post import Post
 from app.model.base_db import Base
@@ -13,6 +13,7 @@ class Content(gj.EmbeddedDocument):
     poster_name = StringField()
     index = IntField()
     comment = StringField()
+    created = DateTimeField(default=datetime.datetime.now)
 
 class Comment(Base):
     post = LazyReferenceField(Post, reverse_delete_rule=CASCADE)

@@ -45,6 +45,7 @@ class PostCommentApi(Resource):
             self.res = response.sucess()
             self.res["data"] = json.loads(comment.to_json())
             comment.save()
+            Post.objects.get(id=post_id).update(inc__comment=1)
         except ValidationError:
             self.res = response.parameter_value_invalid()
         except DoesNotExist:
@@ -85,6 +86,7 @@ class PostCommentApi(Resource):
             comment.save()
             self.res = response.sucess()
             self.res["data"] = json.loads(comment.to_json())
+            Post.objects.get(id=post_id).update(dec__comment=1)
         except DoesNotExist:
             self.res = response.post_is_not_exit()
         except Exception:
