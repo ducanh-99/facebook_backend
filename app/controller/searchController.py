@@ -15,26 +15,31 @@ class SearchApi(Resource):
 
     @jwt_required
     def get(self):
+        result = []
         try:
             user_id = get_jwt_identity()
-            search = Search.objects(owner=user_id).first().to_json()
-            return Response(search, mimetype="application/json", status=200)
+            search = Search.objects.get(owner=user_id)
+            result = search.history_search
+
+        except DoesNotExist:
+            print("not search")
         except Exception:
-            raise Exception
             self.res = response.internal_server()
-        return jsonify(self.res)
+        return jsonify(result[::-1])
     @jwt_required
     def post(self):
         try:
             user_id = get_jwt_identity()
             body = request.get_json()
-            # search_all = Search(owner=user_id).save()
+            search_all = Search.objects.get(owner=user_id)
             Search.objects(owner=user_id).update_one(push__history_search=body["keyword"])
             post = Post.objects(described__icontains = body["keyword"]).to_json()
             return Response(post, mimetype="application/json", status=200)
+        except DoesNotExist:
+            Search(owner=user_id).save()
         except Exception:
             self.res = response.internal_server()
-            # raise Exception
+            raise Exception
         return jsonify(self.res)
 class ListSearchApi(Resource):
     pass
