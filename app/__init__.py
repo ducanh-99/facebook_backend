@@ -13,7 +13,7 @@ socketio = SocketIO()
 def create_app(debug=False):
     from .util.errors import errors
     from .config import config
-    from .routes.routes import initialize_routes
+    from .routes import initialize_routes
     from .chat import main as main_blueprint
     app = Flask(__name__)
     config(app)

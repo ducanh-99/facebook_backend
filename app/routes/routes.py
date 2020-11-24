@@ -8,9 +8,6 @@ from app.controller.commentController import PostCommentApi
 from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi, RejectApi, RecommendFriendApi
 from app.controller.searchController import SearchApi
 
-from . import chat
-from flask import session, redirect, url_for, render_template, request
-
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -58,6 +55,3 @@ def initialize_routes(api):
     api.add_resource(ProfileApi, '/api/profile/<user_id>')
 
 
-@chat.route('/')
-def sessions():
-    return render_template('session.html')
