@@ -69,7 +69,14 @@ class RequestApi(Resource):
 
 
 class RecommendFriendApi(Resource):
-    pass
+
+    def get(self):
+        res = []
+        users = User.objects.to_json()
+        users = json.loads(users)
+        for user in users:
+            res.append(get_user_name(user))
+        return jsonify(res)
 
 
 class ConfirmApi(Resource):
@@ -87,7 +94,6 @@ class ConfirmApi(Resource):
                 sender_friend = Friend.objects(owner=sender_id).first()
                 recevied_friend = Friend.objects(owner=recevied_id).first()
                 for i in sender_friend.list_sent_request:
-                    print(i)
                     if str(i["user"]) == str(recevied_id):
                         sender_friend.update(
                             pull__list_sent_request=i,
@@ -116,6 +122,23 @@ class ConfirmApi(Resource):
         return jsonify(self.res)
 
 
+class RejectApi(Resource):
+
+    @jwt_required
+    def post(self, sender_id):
+        res = {}
+        try:
+            recevied_id = get_jwt_identity()
+            if recevied_id != sender_id:
+                sender_friend = Friend.objects(owner=sender_id).first()
+                recevied_friend = Friend.objects(owner=recevied_id).first()
+                sender_friend.reject_request_sender()
+                recevied_friend.reject_request_recevied()
+        except Exception:
+            res = response.internal_server()
+        return jsonify(res)
+
+
 class BlockApi(Resource):
     res = {}
 
@@ -126,21 +149,26 @@ class BlockApi(Resource):
             if block_id != user_id:
                 user = User.objects(id=user_id).only('username').first()
                 blocker = User.objects(id=block_id).only('username').first()
+                if user == None:
+                    raise DoesNotExist
+                if blocker == None:
+                    raise DoesNotExist
 
-                user_friend = Friend.objects(owner=user_id).first()
-                blocker_friend = Friend.objects(owner=block_id).first()
+                user_friend = Friend.objects.get(owner=user_id)
+                blocker_friend = Friend.objects.get(owner=block_id)
                 blocker_embedded = get_user_name(blocker)
-                for i in user_friend.list_friend:
-                    if str(i["user"]) == str(block_id):
-                        user_friend.update(pull__list_friend=i, dec__friends=1)
-                for i in blocker_friend.list_friend:
-                    if str(i["user"]) == str(user_id):
-                        blocker_friend.update(pull__list_friend=i, dec__friends=1)
-                user_friend.update(push__list_block=blocker_embedded, inc__blocks=1)
+                if user_friend.is_friend(block_id):
+                    user_friend.update(pull__list_friend=i, dec__friends=1)
+
+                if blocker_friend.is_friend(user_id):
+                    blocker_friend.update(pull__list_friend=i, dec__friends=1)
+                user_friend.update(
+                    push__list_block=blocker_embedded, inc__blocks=1)
             self.res = response.sucess()
             self.res["block_id"] = str(block_id)
+        except DoesNotExist:
+            self.res = response.user_is_not_validated()
         except Exception:
-            raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
 

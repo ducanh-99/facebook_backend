@@ -6,6 +6,8 @@ class AlreadyFriend(Exception):
     pass
 class AlreadyLiked(Exception):
     pass
+class NotAccess(Exception):
+    pass
 
 def internal_server():
     sucess = {
@@ -86,7 +88,7 @@ def maximum_number_of_images():
     return res
 
 
-def note_access():
+def not_access():
     res = {
         "code": 1009,
         "message": "Not access"

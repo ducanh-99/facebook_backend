@@ -18,6 +18,7 @@ Flask-JWT-Extended = "*"
 Pillow = "*"
 pymongo = "*"
 Flask-SocketIO = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.8"

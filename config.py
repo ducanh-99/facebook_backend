@@ -5,6 +5,7 @@ from mongoengine import connect
 
 def config(app):
     app.config['JWT_SECRET_KEY'] = 't1NP63m4wnBg6nyHYKfmc2TpCOGI4nss'
+    app.config['SECRET_KEY'] = 'secret!'
     Bcrypt(app)
     JWTManager(app)
     connect(

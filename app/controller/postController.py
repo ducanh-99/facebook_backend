@@ -7,6 +7,7 @@ import json
 from app.model.post import Post, Images
 from app.model.user import User
 from app.model.like import Like
+from app.model.friends import Friend
 from app.model.comment import Comment
 import app.controller.responseController as resCon
 import app.util.response as response
@@ -64,8 +65,9 @@ class PostsApi(Resource):
             user_id = get_jwt_identity()
             form = request.form
             files = request.files
-            user = User.objects(id=user_id).only('username').first()
+            user = User.objects.get(id=user_id)
             owner = get_user_name(user)
+            print()
             post = Post(described=form["described"], owner=owner)
             images = Images()
             # add file video and images
@@ -125,6 +127,9 @@ class PostApi(Resource):
             user_id = get_jwt_identity()
             post = Post.objects.get(id=id).to_json()
             post = json.loads(post)
+            friend_user = Friend.objects.get(owner=post["owner"]["user"])
+            if friend_user.is_blocked(user_id):
+                raise response.NotAccess
 
             like = Like.objects.get(post=post["id"])
             is_liked = like.is_liked(user_id)
@@ -132,6 +137,8 @@ class PostApi(Resource):
 
             self.res = response.sucess()
             self.res["data"] = post
+        except response.NotAccess:
+            self.res = response.not_access()
         except DoesNotExist:
             self.res = response.post_is_not_exit()
         except Exception:
@@ -146,6 +153,10 @@ class UserPostsApi(Resource):
     @jwt_required
     def get(self, user_id):
         try:
+            current_user_id = get_jwt_identity()
+            friend_user = Friend.objects.get(owner=user_id)
+            if friend_user.is_blocked(current_user_id):
+                raise response.NotAccess
             posts = Post.objects()
             data = []
             for post in posts:
@@ -156,6 +167,8 @@ class UserPostsApi(Resource):
                     post["is_liked"] = is_liked
                     data.append(post)
             return jsonify(data[::-1])
+        except response.NotAccess:
+            self.res = response.not_access()
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
