@@ -81,6 +81,8 @@ class RecommendFriendApi(Resource):
             friends = json.loads(Friend.objects.to_json())
 
             for friend in friends:
+                if str(friend["owner"]) == current_user_id:
+                    continue
                 common = self.common_friend(current_friend, friend)
                 user = self.get_owner_name(friend["owner"])
                 user["common_friend"] = common
