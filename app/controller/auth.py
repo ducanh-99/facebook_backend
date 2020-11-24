@@ -17,7 +17,7 @@ class SignupApi(Resource):
     res = {}
     """
     [summary]
-    Truyền vào body 
+    Truyền vào body
     phonenumber
     password
     firstname
@@ -92,7 +92,7 @@ class LogoutApi(Resource):
 
 
 class ChangePasswordApi(Resource):
-    
+
     @jwt_required
     def post(self):
         res = {}
@@ -100,15 +100,20 @@ class ChangePasswordApi(Resource):
             user_id = get_jwt_identity()
             body = request.get_json()
             user = User.objects.get(id=user_id)
-            authorized = user.check_password(body.get('old_password'))
+            authorized = user.check_password(body.get('password'))
             if not authorized:
                 raise UnauthorizedError
             user.password = body.get("new_password")
+            if not user.compare_password(body.get('password'), body.get("new_password")):
+                raise response.PasswordInvalid
             user.hash_password()
             user.save()
             res = response.sucess()
-        except  UnauthorizedError:
-            res = response.user_is_not_validated()
+        except UnauthorizedError:
+            res = response.wrong_password()
+        except response.PasswordInvalid:
+            res = response.password_invalid()
         except Exception:
+            raise Exception
             res = response.internal_server()
         return jsonify(res)

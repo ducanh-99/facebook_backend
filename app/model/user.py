@@ -1,8 +1,9 @@
 import mongoengine_goodjson as gj
 from flask_bcrypt import generate_password_hash, check_password_hash
 import datetime
-from mongoengine import *
+from mongoengine import StringField, ListField, ReferenceField, FileField, BooleanField, DateTimeField
 import uuid
+import pylcs 
 
 from app.model.post import Post
 
@@ -29,7 +30,7 @@ class User(gj.Document):
         self.uuid = str(uuid.uuid4())
         self.verify = False
         with open('app/model/default.jpg', 'rb') as fd:
-            self.avatar.put(fd, content_type = 'image/jpeg')
+            self.avatar.put(fd, content_type='image/jpeg')
         # self.blocks = []
 
     def check_password(self, password):
@@ -43,5 +44,9 @@ class User(gj.Document):
             self.creation_date = datetime.datetime.now()
         self.modified_date = datetime.datetime.now()
         return super(User, self).save(*args, **kwargs)
-
-
+    
+    def compare_password(self, password, new_password):
+        lcs = pylcs.lcs(password, new_password)
+        if (lcs/len(new_password)) < 0.8:
+            return True
+        return False

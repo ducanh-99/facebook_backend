@@ -1,13 +1,26 @@
 class HaveDoneVerify(Exception):
     pass
+
+
 class ParameterValueInvalid(Exception):
     pass
+
+
 class AlreadyFriend(Exception):
     pass
+
+
 class AlreadyLiked(Exception):
     pass
+
+
 class NotAccess(Exception):
     pass
+
+
+class PasswordInvalid(Exception):
+    pass
+
 
 def internal_server():
     sucess = {
@@ -15,6 +28,7 @@ def internal_server():
         "message": "Something wrong"
     }
     return sucess
+
 
 def sucess():
     sucess = {
@@ -103,18 +117,37 @@ def action_done_previously():
     }
     return res
 
+
 def were_friend():
     res = {
-        "code" : 1011,
-        "message" : "You are already friends"
+        "code": 1011,
+        "message": "You are already friends"
     }
+
 
 def user_was_like_post():
     res = {
-        "code" : 1012,
-        "message" : "User was like the post"
+        "code": 1012,
+        "message": "User was like the post"
     }
     return res
+
+
+def password_invalid():
+    res = {
+        "code": 1014,
+        "message": "the new password almost the same as the old password "
+    }
+    return res
+
+
+def wrong_password():
+    res = {
+        "code": 1013,
+        "message": "wrong Password"
+    }
+    return res
+
 
 def post_is_not_exit():
     res = {
@@ -179,6 +212,7 @@ def exception_error():
         "message": "Exception error"
     }
     return res
+
 
 def user_is_invalid():
     res = {

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ea303548e866adb7332b12170883fa9de1f3e51f0a24f5b4b5f1877d23afdcc5"
+            "sha256": "9a7dbade830983fa2d3d1f323370decba75047cb604c6f865730fc2d61a06dbb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -273,6 +273,13 @@
             "index": "pypi",
             "version": "==8.0.1"
         },
+        "pybind11": {
+            "hashes": [
+                "sha256:ab7e60a520fe6ae25eca939191bb2ac416cd58478ce754740238a8bf1af18934",
+                "sha256:c3691da74b670a4850dec30c1145a0dad53a50eeca78b7e7cdc855b5c98fd32d"
+            ],
+            "version": "==2.6.1"
+        },
         "pycparser": {
             "hashes": [
                 "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0",
@@ -286,6 +293,14 @@
                 "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"
             ],
             "version": "==1.7.1"
+        },
+        "pylcs": {
+            "hashes": [
+                "sha256:3dd425c0c356ab040176c8aab58db03e5ffbd53381335fd850b8df2a44b53f09",
+                "sha256:6547f84c95cb2ad6a69eb80f2820677c2aaf2b8e53c897e245b34325601f3804"
+            ],
+            "index": "pypi",
+            "version": "==0.0.6"
         },
         "pymongo": {
             "hashes": [
