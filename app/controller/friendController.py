@@ -70,13 +70,35 @@ class RequestApi(Resource):
 
 class RecommendFriendApi(Resource):
 
+    @jwt_required
     def get(self):
         res = []
-        users = User.objects.to_json()
-        users = json.loads(users)
-        for user in users:
-            res.append(get_user_name(user))
+        try:
+            # init
+            current_user_id = get_jwt_identity()
+            current_friend = json.loads(
+                Friend.objects.get(owner=current_user_id).to_json())
+            friends = json.loads(Friend.objects.to_json())
+
+            for friend in friends:
+                common = self.common_friend(current_friend, friend)
+                user = self.get_owner_name(friend["owner"])
+                user["common_friend"] = common
+                res.append(user)
+        except DoesNotExist:
+            res = response.user_is_invalid()
         return jsonify(res)
+
+    def common_friend(self, current_friend, friend):
+        count = 0
+        for i in current_friend["list_friend"]:
+            if i in friend["list_friend"]:
+                count += 1
+        return count
+
+    def get_owner_name(self, user_id):
+        user = json.loads(User.objects.get(id=user_id).to_json())
+        return get_user_name(user)
 
 
 class ConfirmApi(Resource):
