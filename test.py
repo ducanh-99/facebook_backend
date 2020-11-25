@@ -1,23 +1,16 @@
-"0974485006 - server":
-""
+# def test(**kwargs):
+#     print(kwargs["test1"]) 
+#     print(kwargs["test2"]) 
+#     for i in kwargs:
+#         print (i)
 
+# test(test1 = 1, test2 = 2)
 
-"0974485007 - local":
-'''
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
-eyJpYXQiOjE2MDQ1ODYwNTgsIm5iZiI6MTYwNDU4NjA1OCwianRpIjoiYjF
-hNTMzZmUtNDkyMC00MjkxLWFjZjQtMzNiYzAzYzg1NjAyIiwiZXhwIjoxNjM2MTIyMD
-U4LCJpZGVudGl0eSI6IjVmYTE4M2M4YmM1Zjk5MzdhMzAyNzE0ZCIsImZyZXNoIjpmYW
-xzZSwidHlwZSI6ImFjY2VzcyJ9.WPqnhj8yJBGTqOdwOR5qx_Hj_jTsx6_G1V8dhASJosY
+import datetime
+import pytz
 
-'''
-
-"0974485006 - local":
-'''
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
-eyJpYXQiOjE2MDQ1ODc5MDAsIm5iZiI6MTYwNDU4NzkwMCwia
-nRpIjoiNWE3MjRmNjQtYTQ4Ni00NDZiLTkzNDQtNDU0NWMxODhlYWVjIiwiZXhwIj
-oxNjM2MTIzOTAwLCJpZGVudGl0eSI6IjVmYTE4M2M4YmM1Zjk5MzdhMzAyNzE0ZCIsIm
-ZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.57qHxHp-W1fAYl9arbli2fFLWRC5A
-7wiO5z2SgJ_K8A
-'''
+d = datetime.datetime.now()
+timezone = pytz.timezone("Asia/Vientiane")
+d_aware = timezone.localize(d)
+print (d)
+# print (pytz.all_timezones)
