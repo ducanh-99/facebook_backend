@@ -44,9 +44,11 @@ class User(gj.Document):
             self.creation_date = datetime.datetime.now()
         self.modified_date = datetime.datetime.now()
         return super(User, self).save(*args, **kwargs)
-    
+
     def compare_password(self, password, new_password):
         lcs = pylcs.lcs(password, new_password)
         if (lcs/len(new_password)) < 0.8:
             return True
         return False
+
+

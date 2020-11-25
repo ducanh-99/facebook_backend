@@ -55,3 +55,7 @@ class Friend(gj.Document):
                     pull__list_sent_request=i,
                     dec__sent_request=1,
                 )
+    
+    def common_friend(self, user_id):
+        friend = self.objects.get(owner=user_id)
+        return "ok"
