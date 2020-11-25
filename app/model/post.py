@@ -3,7 +3,7 @@ import datetime
 from mongoengine import FileField, StringField, IntField, EmbeddedDocumentField,DateTimeField
 
 from app.model.userEmbedd import UserEmbedd
-from app.model.base_db import Base, d_aware
+from app.model.base_db import Base, pst_now
 
 
 class Images(gj.EmbeddedDocument):
@@ -23,12 +23,12 @@ class Post(gj.Document):
     state = StringField()
 
     creation_date = DateTimeField()
-    modified_date = DateTimeField(default=d_aware)
+    modified_date = DateTimeField(default=pst_now)
 
     def save(self, *args, **kwargs):
         if not self.creation_date:
-            self.creation_date = d_aware
-        self.modified_date = d_aware
+            self.creation_date = pst_now
+        self.modified_date = pst_now
         return super(Post, self).save(*args, **kwargs)
 
     def is_like(self, user_id):
