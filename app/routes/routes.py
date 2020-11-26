@@ -1,12 +1,13 @@
 from app.controller.test import TestApi
 from app.controller.auth import SignupApi, LoginApi, LogoutApi, ChangePasswordApi
 from app.controller.verifyController import GetVerifyApi
-from app.controller.postController import PostApi, PostsApi, UserPostsApi, VideoRetrievalApi, ImagesRetrievalApi
-from app.controller.profileController import AvtUploadApi, AvatarApi, ProfileApi
+from app.controller.postController import PostApi, PostsApi, UserPostsApi, VideoRetrievalApi, ImagesRetrievalApi, VideoListApi
+from app.controller.profileController import AvtUploadApi, AvatarApi, ProfileApi, UpdateProfileApi
 from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
 from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi, RejectApi, RecommendFriendApi
 from app.controller.searchController import SearchApi
+from app.controller.chatController import ConversationApi, GetListConversationApi
 
 
 def initialize_routes(api):
@@ -35,7 +36,6 @@ def initialize_routes(api):
     # comment
     api.add_resource(PostCommentApi, '/api/comment/<post_id>')
 
-
     # friends
     api.add_resource(ConfirmApi, "/api/friend/confirm/<id>")
     api.add_resource(RejectApi, '/api/friend/reject/<user_id>')
@@ -53,5 +53,11 @@ def initialize_routes(api):
 
     # profile
     api.add_resource(ProfileApi, '/api/profile/<user_id>')
+    api.add_resource(UpdateProfileApi, '/api/update_profile')
 
+    # chat
+    api.add_resource(ConversationApi, '/api/chat/<received_id>')
+    api.add_resource(GetListConversationApi, '/api/get_list_chat')
 
+    # video
+    api.add_resource(VideoListApi, '/api/video')
