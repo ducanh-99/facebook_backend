@@ -203,23 +203,29 @@ class VideoRetrievalApi(Resource):
             self.res = response.internal_server()
         return jsonify(self.res)
 
+
 class VideoListApi(Resource):
 
     @jwt_required
     def get(self):
         res = {}
         try:
-            posts = json.loads(Post.objects.exclude("images").to_json()) 
+            current_user_id = get_jwt_identity()
+            posts = json.loads(Post.objects.exclude("images").to_json())
             data = []
             for post in posts:
                 if "video" in post:
+                    like = Like.objects.get(post=post["id"])
+                    is_liked = like.is_liked(current_user_id)
+                    post["is_liked"] = is_liked
                     data.append(post)
             res = response.sucess()
-            res["data"] = data
+            res["data"] = data[::-1]
         except Exception:
             raise Exception
             res = response.internal_server()
         return jsonify(res)
+
 
 class ReportPostApi(Resource):
     pass
