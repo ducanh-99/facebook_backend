@@ -7,7 +7,7 @@ from app.model.base_db import Base
 class NotiContent(gj.EmbeddedDocument):
     text = StringField()
     user_id = ObjectIdField() 
-    user_name = StringField()
+    username = StringField()
     post_id = ObjectIdField()
     create = DateTimeField(default=datetime.datetime.now)
 

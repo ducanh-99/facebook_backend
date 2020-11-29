@@ -45,7 +45,7 @@ class Friend(gj.Document):
             if str(i["user"]) == str(user_id):
                 self.update(
                     pull__list_request=i,
-                    dec__request=1,
+                    dec__requests=1,
                 )
 
     def reject_request_sender(self, user_id):

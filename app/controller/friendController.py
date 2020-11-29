@@ -9,7 +9,7 @@ from app.model.user import User
 from app.model.userEmbedd import UserEmbedd
 import app.controller.responseController as resCon
 import app.util.response as response
-
+from app.controller.notificationController import NotificationController
 
 def get_user_name(user):
     res = {
@@ -56,6 +56,9 @@ class RequestApi(Resource):
                     push__list_sent_request=recevied_user, inc__sent_request=1)
                 Friend.objects(owner=recevied_id).update_one(
                     push__list_request=sender_user, inc__requests=1)
+            
+            noti = NotificationController()
+            noti.friend_request(owner=recevied_id, user_id=sender_id, username=sender_user["username"])
 
             self.res = response.sucess()
         except response.AlreadyFriend:
@@ -156,9 +159,10 @@ class RejectApi(Resource):
             if recevied_id != sender_id:
                 sender_friend = Friend.objects(owner=sender_id).first()
                 recevied_friend = Friend.objects(owner=recevied_id).first()
-                sender_friend.reject_request_sender()
-                recevied_friend.reject_request_recevied()
+                sender_friend.reject_request_sender(recevied_id)
+                recevied_friend.reject_request_recevied(sender_id)
         except Exception:
+            raise Exception
             res = response.internal_server()
         return jsonify(res)
 
@@ -200,6 +204,7 @@ class BlockApi(Resource):
 class ListFriendApi(Resource):
     res = {}
 
+    @jwt_required
     def get(self, user_id):
         try:
             list_friend = Friend.objects.get(owner=user_id).list_friend

@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
 
-
+from .notificationController import NotificationController
 from app.model.post import Post
 from app.model.like import Like
 import app.controller.responseController as resCon
@@ -17,19 +17,22 @@ class LikeApi(Resource):
     def get(self, id):
         try:
             # Check user was like
-            user_id = get_jwt_identity()
+            current_user_id = get_jwt_identity()
             like = Like.objects.get(post=id)
             for i in like.user_like:
-                if str(i["user"]) == user_id:
+                if str(i["user"]) == current_user_id:
                     raise response.AlreadyLiked
 
             # get userEmbed
-            user = resCon.convert_user_object_to_user_embed(user_id)
+            user = resCon.convert_user_object_to_user_embed(current_user_id)
             like.update(push__user_like=user)
 
             # increase like
-            post = Post.objects(id=id).first()
-            post.update(inc__like=1)
+            post = Post.objects.get(id=id)
+            post.update(inc__like=1)    
+            noti = NotificationController()
+            noti.like(owner=str(post.owner.user), user_id=current_user_id,username=user["username"] ,post_id=post.id)
+            
             self.res = resCon.like_convert(post)
         except response.AlreadyLiked:
             self.res = response.user_was_like_post()

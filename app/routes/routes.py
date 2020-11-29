@@ -1,5 +1,5 @@
 from app.controller.test import TestApi
-from app.controller.auth import SignupApi, LoginApi, LogoutApi, ChangePasswordApi
+from app.controller.auth import SignupApi, LoginApi, LogoutApi, ChangePasswordApi, Noti
 from app.controller.verifyController import GetVerifyApi
 from app.controller.postController import PostApi, PostsApi, UserPostsApi, VideoRetrievalApi, ImagesRetrievalApi, VideoListApi
 from app.controller.profileController import AvtUploadApi, AvatarApi, ProfileApi, UpdateProfileApi
@@ -38,7 +38,7 @@ def initialize_routes(api):
 
     # friends
     api.add_resource(ConfirmApi, "/api/friend/confirm/<id>")
-    api.add_resource(RejectApi, '/api/friend/reject/<user_id>')
+    api.add_resource(RejectApi, '/api/friend/reject/<sender_id>')
     api.add_resource(RequestApi, "/api/friend/request/<id>")
     api.add_resource(BlockApi, '/api/friend/block/<block_id>')
 
@@ -61,3 +61,6 @@ def initialize_routes(api):
 
     # video
     api.add_resource(VideoListApi, '/api/video')
+
+    # test
+    api.add_resource(Noti, "/test_noti")

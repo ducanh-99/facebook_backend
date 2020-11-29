@@ -7,6 +7,7 @@ import datetime
 
 from app.model.user import User
 from app.model.friends import Friend
+from ..model.notification import Notification
 from app.util.errors import SchemaValidationError, NumberAlreadyExistsError, UnauthorizedError, \
     InternalServerError
 from app.controller.responseController import response_value, remove_password_convert_dict
@@ -117,3 +118,15 @@ class ChangePasswordApi(Resource):
             raise Exception
             res = response.internal_server()
         return jsonify(res)
+    
+class Noti(Resource):
+    def get(self):
+        users = User.objects()
+        
+        for user in users:
+            noti = Notification.objects(owner=user.id).first()
+            if noti == None:
+                Notification(owner=user.id).save()
+        return "ok"
+
+            

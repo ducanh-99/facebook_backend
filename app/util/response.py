@@ -89,7 +89,7 @@ def file_size_too_big():
 def upload_file_failed():
     res = {
         "code": 1007,
-        "message": "Upload file failde!"
+        "message": "Upload file failed!"
     }
     return res
 
@@ -160,7 +160,7 @@ def post_is_not_exit():
 def code_verify_is_incorret():
     res = {
         "code": 9993,
-        "message": "Code verify is incorret"
+        "message": "Code verify is incorrect"
     }
     return res
 

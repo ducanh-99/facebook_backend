@@ -51,4 +51,6 @@ class User(gj.Document):
             return True
         return False
 
+    def get_user_name(self):
+        return self.username
 
