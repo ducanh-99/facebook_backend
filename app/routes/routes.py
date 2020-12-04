@@ -8,7 +8,7 @@ from app.controller.commentController import PostCommentApi
 from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi, RejectApi, RecommendFriendApi
 from app.controller.searchController import SearchApi
 from app.controller.chatController import ConversationApi, GetListConversationApi
-
+from app.controller.notificationController import NotificationsApi, NotificationApi
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -64,3 +64,7 @@ def initialize_routes(api):
 
     # test
     api.add_resource(Noti, "/test_noti")
+
+    # noti
+    api.add_resource(NotificationsApi, "/api/noti")
+    api.add_resource(NotificationApi, "/api/noti/<noti_id>")
