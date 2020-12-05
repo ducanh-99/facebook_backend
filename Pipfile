@@ -20,6 +20,7 @@ pymongo = "*"
 Flask-SocketIO = "*"
 flask-socketio = "*"
 pylcs = "*"
+eventlet = "*"
 
 [requires]
 python_version = "3.8"
