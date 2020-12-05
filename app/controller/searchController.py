@@ -46,10 +46,11 @@ class SearchApi(Resource):
             for user in users:
                 items = {}
                 items["username"] = user["username"]
+                items["id"] = user["id"]
                 friend = Friend.objects.get(owner=user["id"])
                 if friend.is_friend(user["id"]):
                     items["is_friend"] = True
-                else :
+                else:
                     items["is_friend"] = False
                 data.append(items)
 

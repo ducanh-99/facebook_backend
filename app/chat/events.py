@@ -7,9 +7,12 @@ from .. import socketio
 def joined(message):
     """Sent by clients when they enter a room.
     A status message is broadcast to all people in the room."""
+    print("test")
+    print("---------------------------------------- joined")
     room = session.get('room')
     join_room(room)
-    emit('status', {'msg': session.get('name') + ' has entered the room.'}, room=room)
+    emit('status', {'msg': session.get('name') +
+                    ' has entered the room.'}, room=room)
 
 
 @socketio.on('text', namespace='/chat')
@@ -17,7 +20,8 @@ def text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
     room = session.get('room')
-    emit('message', {'msg': session.get('name') + ':' + message['msg']}, room=room)
+    emit('message', {'msg': session.get('name') +
+                     ':' + message['msg']}, room=room)
 
 
 @socketio.on('left', namespace='/chat')
@@ -26,5 +30,17 @@ def left(message):
     A status message is broadcast to all people in the room."""
     room = session.get('room')
     leave_room(room)
-    emit('status', {'msg': session.get('name') + ' has left the room.'}, room=room)
+    emit('status', {'msg': session.get('name') +
+                    ' has left the room.'}, room=room)
 
+
+@socketio.on('test')
+def my_event(message):
+    print("----------------------------------------")
+    print("join room" + message["data"])
+    print("----------------------------------------")
+
+# @socketio.on("connect")
+# def connect():
+#     print("----------------------------------------")
+#     print ("connected")
