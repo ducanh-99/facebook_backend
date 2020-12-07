@@ -7,6 +7,7 @@ import json
 from app.model.search import Search
 from app.model.post import Post
 from app.model.user import User
+from app.model.like import Like
 from app.model.friends import Friend
 import app.controller.responseController as resCon
 import app.util.response as response
@@ -39,8 +40,12 @@ class SearchApi(Resource):
                 push__history_search=body["keyword"])
             users = json.loads(User.objects(
                 username__icontains=body["keyword"]).to_json())
-            post = json.loads(Post.objects(
+            posts = json.loads(Post.objects(
                 described__icontains=body["keyword"]).to_json())
+            for index, post in enumerate(posts):
+                like = Like.objects.get(post=post["id"])
+                is_liked = like.is_liked(user_id)
+                posts[index]["is_liked"] = is_liked
             data = []
 
             for user in users:
@@ -55,7 +60,7 @@ class SearchApi(Resource):
                 data.append(items)
 
             self.res["user"] = data
-            self.res["post"] = post
+            self.res["posts"] = posts
         except DoesNotExist:
             Search(owner=user_id).save()
         except Exception:
