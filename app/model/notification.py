@@ -8,6 +8,7 @@ from app.model.base_db import Base
 class NotiContent(gj.EmbeddedDocument):
     index = IntField(default=1)
     text = StringField(required=True)
+    category = StringField()
     user_id = ObjectIdField()
     username = StringField()
     post_id = ObjectIdField()
@@ -27,7 +28,7 @@ class Notification(gj.Document):
             self.creation_date = datetime.datetime.now()
         self.modified_date = datetime.datetime.now()
         return super(Notification, self).save(*args, **kwargs)
-    
+
     def read_notification(self, index):
         for i in range(len(self.content)):
             if index == self.content[i].index:
@@ -35,3 +36,13 @@ class Notification(gj.Document):
                 return True
         return False
 
+    def check_content_empty(self):
+        if len(self.content) == 0:
+            return True
+        return False
+
+    def get_index_content(self):
+        index = 1
+        if not self.check_content_empty():
+            index = self.content[-1].index + 1
+        return index

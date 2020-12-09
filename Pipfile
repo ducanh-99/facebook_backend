@@ -18,7 +18,6 @@ Flask-JWT-Extended = "*"
 Pillow = "*"
 pymongo = "*"
 Flask-SocketIO = "*"
-flask-socketio = "*"
 pylcs = "*"
 eventlet = "*"
 

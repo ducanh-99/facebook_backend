@@ -7,8 +7,10 @@ from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
 from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi, RejectApi, RecommendFriendApi
 from app.controller.searchController import SearchApi
-from app.controller.chatController import ConversationApi, GetListConversationApi
+from app.controller.chatController import ConversationApi, GetListConversationApi, CreateAllConversation, GetMessageConversationApi
 from app.controller.notificationController import NotificationsApi, NotificationApi
+from app.controller.InitController import Init
+
 
 def initialize_routes(api):
     api.add_resource(TestApi, '/api/test')
@@ -58,12 +60,14 @@ def initialize_routes(api):
     # chat
     api.add_resource(ConversationApi, '/api/chat/<received_id>')
     api.add_resource(GetListConversationApi, '/api/get_list_chat')
-
+    api.add_resource(CreateAllConversation, "/api/create")
+    api.add_resource(GetMessageConversationApi, "/api/<user_id>")
     # video
     api.add_resource(VideoListApi, '/api/video')
 
-    # test
+    # init
     api.add_resource(Noti, "/test_noti")
+    api.add_resource(Init, "/api/init")
 
     # noti
     api.add_resource(NotificationsApi, "/api/noti")

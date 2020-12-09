@@ -29,11 +29,11 @@ class NotificationsApi(Resource):
             notifications = json.loads(
                 Notification.objects.get(owner=current_user_id).to_json())
 
-            res =  notifications
+            res = notifications
         except DoesNotExist:
             res = response.user_is_invalid()
         return jsonify(res)
-    
+
     @jwt_required
     def post(self):
         res = {}
@@ -49,7 +49,8 @@ class NotificationsApi(Resource):
             raise Exception
             res = response.internal_server()
         return jsonify(res)
-    
+
+
 class NotificationApi(Resource):
 
     @jwt_required
@@ -66,7 +67,6 @@ class NotificationApi(Resource):
             raise Exception
             res = response.internal_server()
         return jsonify(res)
-        
 
 
 class NotificationController():
@@ -75,13 +75,11 @@ class NotificationController():
         content = {}
         try:
             notification = Notification.objects.get(owner=owner)
-            index = notification.content[-1].index + 1
-            print(index)
+            index = notification.get_index_content()
 
             text = str(username) + " đã thích bài viết của bạn"
             content = set_content(text=text, user_id=user_id,
-                                  post_id=post_id, username=username, index=index)
-            print(content)
+                                  post_id=post_id, username=username, index=index, category="like")
             notification.update(push__content=content)
         except DoesNotExist:
             Notification(owner=owner).save()
@@ -89,10 +87,11 @@ class NotificationController():
     def comment(self, owner, user_id, username, post_id):
         try:
             notification = Notification.objects.get(owner=owner)
+            index = notification.get_index_content()
 
             text = str(username) + " đã bình luận bài viết của bạn"
             content = set_content(text=text, user_id=user_id,
-                                  post_id=post_id, username=username)
+                                  post_id=post_id, username=username, index=index, category="comment")
             print(content)
             notification.update(push__content=content)
         except DoesNotExist:
@@ -104,9 +103,10 @@ class NotificationController():
     def friend_request(self, owner, user_id, username):
         try:
             notification = Notification.objects.get(owner=owner)
+            index = notification.get_index_content()
             text = str(username) + " đã gửi lời mới kết bạn"
             content = set_content(
-                text=text, user_id=user_id, username=username)
+                text=text, user_id=user_id, username=username, index=index,  category="friend")
             notification.update(push__content=content)
         except DoesNotExist:
             Notification(owner=owner).save()

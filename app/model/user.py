@@ -6,6 +6,7 @@ import uuid
 import pylcs 
 
 from app.model.post import Post
+from app.model.userEmbedd import UserEmbedd
 
 
 class User(gj.Document):
@@ -53,4 +54,10 @@ class User(gj.Document):
 
     def get_user_name(self):
         return self.username
+    
+    def get_user_embedded(self):
+        res = UserEmbedd()
+        res.user = self.id
+        res.username = self.username
+        return res
 

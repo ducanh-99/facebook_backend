@@ -6,6 +6,7 @@ from app.model.base_db import Base
 from .userEmbedd import UserEmbedd
 from .user import User
 
+
 class Message(gj.EmbeddedDocument):
     from_user = ObjectIdField()
     to_user = ObjectIdField()
@@ -31,3 +32,6 @@ class Conversation(gj.Document):
             if str(i["user"]) == user_id:
                 return True
         return False
+
+    def check_list_user(self, list_user):
+        return list_user == self.users or list_user[::-1] == self.users

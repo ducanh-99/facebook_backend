@@ -37,7 +37,7 @@ def left(message):
 @socketio.on('test')
 def my_event(message):
     print("----------------------------------------")
-    print("join room" + message["data"])
+    print("join room" + message["id_room"])
     print("----------------------------------------")
 
 # @socketio.on("connect")
