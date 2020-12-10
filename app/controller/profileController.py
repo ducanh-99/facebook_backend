@@ -8,13 +8,13 @@ import uuid
 import json
 
 from app.model.user import User
+from app.model.friends import Friend
 import app.util.response as response
-
 
 
 class AvtUploadApi(Resource):
     decorators = []
-    res = {}        
+    res = {}
 
     @jwt_required
     def post(self):
@@ -28,9 +28,10 @@ class AvtUploadApi(Resource):
                     'message': 'No file found',
                     'status': 'error'
                 }
-            else :
+            else:
                 filename = str(uuid.uuid4().hex) + '.jpeg'
-                user.avatar.replace(body, content_type= 'image/jpeg', filename=filename)
+                user.avatar.replace(
+                    body, content_type='image/jpeg', filename=filename)
                 user.save()
                 self.res = response.sucess()
                 self.res["avatar"] = filename
@@ -41,9 +42,11 @@ class AvtUploadApi(Resource):
             self.res = response.upload_file_failed()
         return jsonify(self.res)
 
+
 class AvatarApi(Resource):
 
     res = {}
+
     def get(self, id):
         try:
             user = User.objects.get(id=id)
@@ -56,24 +59,31 @@ class AvatarApi(Resource):
             self.res = response.internal_server()
         return jsonify(self.res)
 
+
 class ProfileApi(Resource):
     res = {}
 
     @jwt_required
     def get(self, user_id):
         try:
-            user = User.objects.get(id = user_id).to_json()
+            current_user_id = get_jwt_identity()
+            user = User.objects.get(id=user_id).to_json()
             user = json.loads(user)
             del user["password"]
             del user["blocks"]
             del user["uuid"]
             del user["verify"]
+            user["is_friend"] = False
+            current_friend = Friend.objects.get(owner=current_user_id)
+            if current_friend.is_friend(user_id):
+                user["is_friend"] = True
             self.res = user
         except DoesNotExist:
             self.res = response.user_is_invalid()
         except Exception:
             self.res = response.internal_server()
         return jsonify(self.res)
+
 
 class UpdateProfileApi(Resource):
 
