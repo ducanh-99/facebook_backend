@@ -12,6 +12,8 @@ from app.model.comment import Comment
 import app.controller.responseController as resCon
 import app.util.response as response
 
+from app.controller.validation import is_block
+
 
 def get_user_name(user):
     res = {
@@ -127,9 +129,7 @@ class PostApi(Resource):
             user_id = get_jwt_identity()
             post = Post.objects.get(id=id).to_json()
             post = json.loads(post)
-            friend_user = Friend.objects.get(owner=post["owner"]["user"])
-            if friend_user.is_blocked(user_id):
-                raise response.NotAccess
+            is_block(user_id=user_id, other_user_id=post["owner"]["user"])
 
             like = Like.objects.get(post=post["id"])
             is_liked = like.is_liked(user_id)
@@ -154,9 +154,7 @@ class UserPostsApi(Resource):
     def get(self, user_id):
         try:
             current_user_id = get_jwt_identity()
-            friend_user = Friend.objects.get(owner=user_id)
-            if friend_user.is_blocked(current_user_id):
-                raise response.NotAccess
+            is_block(user_id=user_id, other_user_id=current_user_id)
             posts = Post.objects()
             data = []
             for post in posts:

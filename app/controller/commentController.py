@@ -10,6 +10,7 @@ from app.model.user import User
 from app.model.comment import Comment, Content
 import app.controller.responseController as resCon
 import app.util.response as response
+from app.controller.validation import is_block
 
 
 class PostCommentApi(Resource):
@@ -32,6 +33,9 @@ class PostCommentApi(Resource):
         try:
             # prepare data
             user_id = get_jwt_identity()
+            post = Post.objects.get(id=post_id)
+            is_block(user_id=user_id, other_user_id=post["owner"]["user"])
+
             body = request.get_json()
             user = User.objects.get(id=user_id)
             comment = Comment.objects.get(post=post_id)
@@ -45,7 +49,9 @@ class PostCommentApi(Resource):
             self.res = response.sucess()
             self.res["data"] = json.loads(comment.to_json())
             comment.save()
-            Post.objects.get(id=post_id).update(inc__comment=1)
+            post.update(inc__comment=1)
+        except response.NotAccess:
+            self.res = response.not_access()
         except ValidationError:
             self.res = response.parameter_value_invalid()
         except DoesNotExist:
