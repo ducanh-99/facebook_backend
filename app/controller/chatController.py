@@ -108,6 +108,22 @@ class MessageApi(Resource):
         message.index = index
         return message
 
+    @jwt_required
+    def delete(self, conversation_id):
+        res = {}
+        try:
+            conversation = Conversation.objects.get(id=conversation_id)
+            body = request.get_json()
+            index = body["index"]
+            message = conversation.get_message_by_index(index)
+            if message != None:
+                conversation.update(pull__messages=message)
+                res = response.sucess()
+        except Exception:
+            raise Exception
+            res = response.internal_server()
+        return jsonify(res)
+
 
 class GetMessageConversationApi(Resource):
 

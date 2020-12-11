@@ -49,3 +49,10 @@ class Conversation(gj.Document):
             other_user_id = str(user["user"])
             if other_user_id != user_id:
                 return other_user_id
+    
+    def get_message_by_index(self, index):
+        for message in self.messages:
+            if index == message["index"]:
+                return message
+        return None
+
