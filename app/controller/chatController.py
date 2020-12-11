@@ -50,9 +50,68 @@ class GetListConversationApi(Resource):
         return conversation
 
 
-class GetMessageConversationApi(Resource):
+class GetConversationApi(Resource):
 
     @jwt_required
+    def post(self, conversation_id):
+        res = {}
+        try:
+            conversation = Conversation.objects.get(
+                id=conversation_id).to_json()
+            return Response(conversation, mimetype="application/json")
+        except Exception:
+            res = response.internal_server()
+        return jsonify(res)
+
+    @jwt_required
+    def delete(self, conversation_id):
+        res = {}
+        try:
+            conversation = Conversation.objects.get(
+                id=conversation_id).delete()
+            res = response.sucess()
+            # return Response(conversation, mimetype="application/json")
+        except Exception:
+            res = response.internal_server()
+        return jsonify(res)
+
+
+class MessageApi(Resource):
+
+    @jwt_required
+    def post(self, conversation_id):
+        res = {}
+        try:
+            from_user = get_jwt_identity()
+            conversation = Conversation.objects.get(id=conversation_id)
+            to_user = conversation.get_other_user(from_user)
+
+            body = request.get_json()
+            text = body["text"]
+            index = conversation.get_index()
+
+            message = self.create_message(from_user, to_user, text, index)
+            conversation.update(push__messages=message)
+
+            return Response(conversation.to_json(), mimetype="application/json")
+
+        except Exception:
+            raise Exception
+            res = response.internal_server()
+        return jsonify(res)
+
+    def create_message(self, from_user, to_user, text, index):
+        message = Message()
+        message.from_user = from_user
+        message.to_user = to_user
+        message.text = text
+        message.index = index
+        return message
+
+
+class GetMessageConversationApi(Resource):
+
+    @ jwt_required
     def post(self, user_id):
         res = {}
         try:
@@ -94,7 +153,7 @@ class ReadedConversationApi(Resource):
 
 class ConversationApi(Resource):
 
-    @jwt_required
+    @ jwt_required
     def get(self, received_id):
         try:
             # user = resCon.get_user_name(json.loads(
@@ -110,7 +169,7 @@ class ConversationApi(Resource):
         except Exception:
             pass
 
-    @jwt_required
+    @ jwt_required
     def post(self, received_id):
         res = {}
         try:
@@ -133,7 +192,8 @@ class ConversationApi(Resource):
             Conversation.objects.get(users=users)
             res = response.user_existed()
         except DoesNotExist:
-            conversation = Conversation(users=users, messages=messages).save()
+            conversation = Conversation(
+                users=users, messages=messages).save()
             session["chat"] = str(conversation.id)
             res = response.sucess()
         except Exception:

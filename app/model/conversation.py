@@ -1,6 +1,6 @@
 import mongoengine_goodjson as gj
 import datetime
-from mongoengine import EmbeddedDocumentField, ListField, ObjectIdField, StringField, DateTimeField
+from mongoengine import EmbeddedDocumentField, ListField, ObjectIdField, StringField, DateTimeField, IntField
 from app.model.base_db import Base
 
 from .userEmbedd import UserEmbedd
@@ -12,6 +12,7 @@ class Message(gj.EmbeddedDocument):
     to_user = ObjectIdField()
     text = StringField()
     create = DateTimeField(default=datetime.datetime.now)
+    index = IntField()
 
 
 class Conversation(gj.Document):
@@ -35,3 +36,16 @@ class Conversation(gj.Document):
 
     def check_list_user(self, list_user):
         return list_user == self.users or list_user[::-1] == self.users
+
+    def get_index(self):
+        index = 1
+        if len(self.messages) != 0:
+            index = self.messages[-1].index + 1
+        return index
+
+    def get_other_user(self, user_id):
+        other_user_id = ""
+        for user in self.users:
+            other_user_id = str(user["user"])
+            if other_user_id != user_id:
+                return other_user_id
