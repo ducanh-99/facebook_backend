@@ -5,7 +5,7 @@ from app.controller.postController import PostApi, PostsApi, UserPostsApi, Video
 from app.controller.profileController import AvtUploadApi, AvatarApi, ProfileApi, UpdateProfileApi
 from app.controller.likeController import LikeApi, DislikeApi
 from app.controller.commentController import PostCommentApi
-from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi, RejectApi, RecommendFriendApi
+from app.controller.friendController import ConfirmApi, RequestApi, ListRequestApi, BlockApi, ListFriendApi, ListBlockApi, ListSentRequestApi, RejectApi, RecommendFriendApi, UnfriendApi
 from app.controller.searchController import SearchApi
 from app.controller.chatController import ConversationApi, GetListConversationApi, CreateAllConversation, GetMessageConversationApi, GetConversationApi, MessageApi
 from app.controller.notificationController import NotificationsApi, NotificationApi
@@ -50,6 +50,8 @@ def initialize_routes(api):
     api.add_resource(ListSentRequestApi, '/api/friend/list_sent_request')
 
     api.add_resource(RecommendFriendApi, '/api/friend/recommend')
+
+    api.add_resource(UnfriendApi, '/api/unfriend/<friend_id>')
     # Search
     api.add_resource(SearchApi, "/api/search")
 

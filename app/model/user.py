@@ -3,7 +3,7 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 import datetime
 from mongoengine import StringField, ListField, ReferenceField, FileField, BooleanField, DateTimeField
 import uuid
-import pylcs 
+import pylcs
 
 from app.model.post import Post
 from app.model.userEmbedd import UserEmbedd
@@ -52,12 +52,15 @@ class User(gj.Document):
             return True
         return False
 
-    def get_user_name(self):
-        return self.username
-    
+    def get_user_dic(self):
+        res = {
+            "user": self.id,
+            "username": self.username
+        }
+        return res
+
     def get_user_embedded(self):
         res = UserEmbedd()
         res.user = self.id
         res.username = self.username
         return res
-

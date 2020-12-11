@@ -11,6 +11,7 @@ import app.controller.responseController as resCon
 import app.util.response as response
 from app.controller.notificationController import NotificationController
 
+
 def get_user_name(user):
     res = {
         "user": user["id"],
@@ -56,9 +57,10 @@ class RequestApi(Resource):
                     push__list_sent_request=recevied_user, inc__sent_request=1)
                 Friend.objects(owner=recevied_id).update_one(
                     push__list_request=sender_user, inc__requests=1)
-            
+
             noti = NotificationController()
-            noti.friend_request(owner=recevied_id, user_id=sender_id, username=sender_user["username"])
+            noti.friend_request(
+                owner=recevied_id, user_id=sender_id, username=sender_user["username"])
 
             self.res = response.sucess()
         except response.AlreadyFriend:
@@ -69,6 +71,28 @@ class RequestApi(Resource):
             raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
+
+
+class UnfriendApi(Resource):
+    @jwt_required
+    def get(self, friend_id):
+        res = {}
+        try:
+            user_id = get_jwt_identity()
+            user = User.objects.get(id=user_id).get_user_dic()
+            friend = User.objects.get(id=friend_id).get_user_dic()
+            print( user, friend)
+            if user_id != friend_id:
+                Friend.objects(owner=user_id).update_one(
+                    pull__list_friend=friend, dec__friends=1)
+                Friend.objects(owner=friend_id).update_one(
+                    pull__list_friend=user, dec__friends=1)
+
+            res = response.sucess()
+        except Exception:
+            raise Exception
+            res = response.internal_server()
+        return jsonify(res)
 
 
 class RecommendFriendApi(Resource):
@@ -108,7 +132,6 @@ class RecommendFriendApi(Resource):
 
 class ConfirmApi(Resource):
     res = {}
-    check_request = False
 
     @jwt_required
     def get(self, id):
@@ -138,10 +161,6 @@ class ConfirmApi(Resource):
                             inc__friends=1
                         )
                         self.check_request = True
-            if self.check_request:
-                self.res = response.sucess()
-            else:
-                raise Exception
         except DoesNotExist:
             self.res = response.user_is_invalid()
         except Exception:
