@@ -9,6 +9,8 @@ from ..model.conversation import Conversation, Message
 import app.controller.responseController as resCon
 import app.util.response as response
 
+from app.controller.validation import is_block
+
 
 def get_list_embedded(current_user_id, user_id):
     current_user = User.objects().get(id=current_user_id)
@@ -17,6 +19,16 @@ def get_list_embedded(current_user_id, user_id):
     user = user.get_user_embedded()
     list_user = [current_user, user]
     return list_user
+
+
+def remove_user(conversation, user_id):
+    received = {}
+    for i in conversation["users"]:
+        if str(i["user"]) != user_id:
+            received = i
+            del conversation["users"]
+            conversation["received"] = received
+    return conversation
 
 
 class GetListConversationApi(Resource):
@@ -31,6 +43,7 @@ class GetListConversationApi(Resource):
             for conversation in conversations:
                 if conversation.check_user(current_user_id):
                     conversation = json.loads(conversation.to_json())
+                    conversation = remove_user(conversation, current_user_id)
                     conversation = self.get_last_message(conversation)
                     if conversation:
                         data.append(conversation)
@@ -53,22 +66,29 @@ class GetListConversationApi(Resource):
 class GetConversationApi(Resource):
 
     @jwt_required
-    def post(self, conversation_id):
+    def post(self, received_id):
         res = {}
         try:
-            conversation = Conversation.objects.get(
-                id=conversation_id).to_json()
+            current_user_id = get_jwt_identity()
+            users = get_list_embedded(current_user_id, received_id)
+            conversation = Conversation.objects.get_users(
+                users).first().to_json()
+            conversation = json.loads(conversation)
+            conversation = remove_user(conversation, current_user_id)
+            conversation = json.dumps(conversation)
             return Response(conversation, mimetype="application/json")
         except Exception:
             res = response.internal_server()
         return jsonify(res)
 
     @jwt_required
-    def delete(self, conversation_id):
+    def delete(self, received_id):
         res = {}
         try:
-            conversation = Conversation.objects.get(
-                id=conversation_id).delete()
+            current_user_id = get_jwt_identity()
+            users = get_list_embedded(current_user_id, received_id)
+            conversation = Conversation.objects.get_users(
+                users).first().delete()
             res = response.sucess()
             # return Response(conversation, mimetype="application/json")
         except Exception:
@@ -79,12 +99,17 @@ class GetConversationApi(Resource):
 class MessageApi(Resource):
 
     @jwt_required
-    def post(self, conversation_id):
+    def post(self, received_id):
         res = {}
         try:
             from_user = get_jwt_identity()
-            conversation = Conversation.objects.get(id=conversation_id)
-            to_user = conversation.get_other_user(from_user)
+            users = get_list_embedded(from_user, received_id)
+            conversation = Conversation.objects.get_users(
+                users).first()
+            if conversation == None:
+                conversation = self.create_conversation(from_user, received_id)
+            to_user = received_id
+            is_block(user_id=from_user, other_user_id=to_user)
 
             body = request.get_json()
             text = body["text"]
@@ -94,7 +119,8 @@ class MessageApi(Resource):
             conversation.update(push__messages=message)
 
             return Response(conversation.to_json(), mimetype="application/json")
-
+        except response.NotAccess:
+            res = response.not_access()
         except Exception:
             raise Exception
             res = response.internal_server()
@@ -108,11 +134,22 @@ class MessageApi(Resource):
         message.index = index
         return message
 
+    def create_conversation(self, user_id, received_id):
+        users = get_list_embedded(user_id, received_id)
+        conversation = Conversation(users=users).save()
+        print(conversation)
+        return conversation
+
     @jwt_required
-    def delete(self, conversation_id):
+    def delete(self, received_id):
         res = {}
         try:
-            conversation = Conversation.objects.get(id=conversation_id)
+            from_user = get_jwt_identity()
+            users = get_list_embedded(from_user, received_id)
+            conversation = Conversation.objects.get_users(
+                users).first()
+            if conversation == None:
+                raise Exception
             body = request.get_json()
             index = body["index"]
             message = conversation.get_message_by_index(index)
@@ -120,7 +157,6 @@ class MessageApi(Resource):
                 conversation.update(pull__messages=message)
                 res = response.sucess()
         except Exception:
-            raise Exception
             res = response.internal_server()
         return jsonify(res)
 

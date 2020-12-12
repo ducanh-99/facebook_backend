@@ -62,11 +62,11 @@ def initialize_routes(api):
     # chat
     api.add_resource(ConversationApi, '/api/chat/<received_id>')
     api.add_resource(GetListConversationApi, '/api/get_list_chat')
-    api.add_resource(GetConversationApi, '/api/get_chat/<conversation_id>')
+    api.add_resource(GetConversationApi, '/api/get_chat/<received_id>')
     api.add_resource(CreateAllConversation, "/api/create")
     api.add_resource(GetMessageConversationApi, "/api/<user_id>")
 
-    api.add_resource(MessageApi, '/api/message/<conversation_id>')
+    api.add_resource(MessageApi, '/api/message/<received_id>')
     # video
     api.add_resource(VideoListApi, '/api/video')
 

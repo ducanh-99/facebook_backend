@@ -1,11 +1,15 @@
 import mongoengine_goodjson as gj
 import datetime
-from mongoengine import EmbeddedDocumentField, ListField, ObjectIdField, StringField, DateTimeField, IntField
+from mongoengine import EmbeddedDocumentField, ListField, ObjectIdField, StringField, DateTimeField, IntField, QuerySet
 from app.model.base_db import Base
 
 from .userEmbedd import UserEmbedd
 from .user import User
 
+class UsersQuery(gj.QuerySet):
+
+    def get_users(self, users):
+        return self.filter(users=users) or self.filter(users=users[::-1])
 
 class Message(gj.EmbeddedDocument):
     from_user = ObjectIdField()
@@ -16,6 +20,7 @@ class Message(gj.EmbeddedDocument):
 
 
 class Conversation(gj.Document):
+    meta = {'queryset_class': UsersQuery}
     users = ListField(EmbeddedDocumentField(UserEmbedd))
     messages = ListField(EmbeddedDocumentField(Message))
     creation_date = DateTimeField()

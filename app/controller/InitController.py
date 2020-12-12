@@ -18,10 +18,12 @@ class Init(Resource):
 
     def get(self):
         self.notification()
+        return "ok"
 
     def notification(self):
         users = json.loads(User.objects().to_json())
         for user in users:
             noti = Notification.objects(owner=user["id"]).first()
             if noti == None:
+                print("test")
                 Notification(owner=user["id"]).save()
