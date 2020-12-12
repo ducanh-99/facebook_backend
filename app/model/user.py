@@ -45,6 +45,14 @@ class User(gj.Document):
             self.creation_date = datetime.datetime.now()
         self.modified_date = datetime.datetime.now()
         return super(User, self).save(*args, **kwargs)
+    
+    def update_username(self, firstname="", lastname = ""):
+        if firstname == "":
+            firstname = self.firstname
+        if lastname == "":
+            lastname = self.lastname
+        self.username = firstname + " " + lastname
+
 
     def compare_password(self, password, new_password):
         lcs = pylcs.lcs(password, new_password)

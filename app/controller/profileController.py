@@ -93,12 +93,16 @@ class UpdateProfileApi(Resource):
         try:
             current_user_id = get_jwt_identity()
             user = User.objects.get(id=current_user_id)
-
             body = request.get_json()
+            if "firstname" in body:
+                body["username"] = body["firstname"] + " " + user.lastname
+            if "lastname" in body:
+                body["username"] = user.firstname + " " + body["lastname"]
             user.update(**body)
             res = response.sucess()
         except DoesNotExist:
             res = response.user_is_invalid()
         except Exception:
+            raise Exception
             res = response.internal_server()
         return jsonify(res)

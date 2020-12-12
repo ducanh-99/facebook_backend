@@ -77,7 +77,7 @@ class NotificationController():
             notification = Notification.objects.get(owner=owner)
             index = notification.get_index_content()
 
-            text = str(username) + " đã thích bài viết của bạn"
+            text = "đã thích bài viết của bạn"
             content = set_content(text=text, user_id=user_id,
                                   post_id=post_id, username=username, index=index, category="like")
             notification.update(push__content=content)
@@ -89,7 +89,7 @@ class NotificationController():
             notification = Notification.objects.get(owner=owner)
             index = notification.get_index_content()
 
-            text = str(username) + " đã bình luận bài viết của bạn"
+            text = "đã bình luận bài viết của bạn"
             content = set_content(text=text, user_id=user_id,
                                   post_id=post_id, username=username, index=index, category="comment")
             print(content)
@@ -104,7 +104,7 @@ class NotificationController():
         try:
             notification = Notification.objects.get(owner=owner)
             index = notification.get_index_content()
-            text = str(username) + " đã gửi lời mới kết bạn"
+            text = "đã gửi lời mới kết bạn"
             content = set_content(
                 text=text, user_id=user_id, username=username, index=index,  category="friend")
             notification.update(push__content=content)
