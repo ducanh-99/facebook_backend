@@ -60,7 +60,7 @@ class SearchApi(Resource):
                 data.append(items)
 
             self.res["user"] = data
-            self.res["posts"] = posts
+            self.res["posts"] = posts[::-1]
         except DoesNotExist:
             Search(owner=user_id).save()
         except Exception:
