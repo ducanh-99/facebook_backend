@@ -86,7 +86,7 @@ class UnfriendApi(Resource):
             user_id = get_jwt_identity()
             user = User.objects.get(id=user_id).get_user_dic()
             friend = User.objects.get(id=friend_id).get_user_dic()
-            print( user, friend)
+            print(user, friend)
             if user_id != friend_id:
                 Friend.objects(owner=user_id).update_one(
                     pull__list_friend=friend, dec__friends=1)
@@ -108,12 +108,13 @@ class RecommendFriendApi(Resource):
         try:
             # init
             current_user_id = get_jwt_identity()
-            current_friend = json.loads(
-                Friend.objects.get(owner=current_user_id).to_json())
+            current_friend = Friend.objects.get(owner=current_user_id)
             friends = json.loads(Friend.objects.to_json())
 
             for friend in friends:
                 if str(friend["owner"]) == current_user_id:
+                    continue
+                if current_friend.is_friend(friend["owner"]):
                     continue
                 common = self.common_friend(current_friend, friend)
                 user = self.get_owner_name(friend["owner"])
@@ -189,6 +190,7 @@ class RejectApi(Resource):
             raise Exception
             res = response.internal_server()
         return jsonify(res)
+
 
 class UndoRequestApi(Resource):
 
