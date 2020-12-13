@@ -5,6 +5,7 @@ from mongoengine.errors import FieldDoesNotExist, NotUniqueError, DoesNotExist
 import json
 
 from app.model.user import User
+from app.model.friends import Friend
 from ..model.conversation import Conversation, Message
 import app.controller.responseController as resCon
 import app.util.response as response
@@ -41,6 +42,8 @@ class GetListConversationApi(Resource):
             conversations = Conversation.objects()
             data = []
             for conversation in conversations:
+                if self.check_is_not_friend(conversation.users):
+                    continue
                 if conversation.check_user(current_user_id):
                     conversation = json.loads(conversation.to_json())
                     conversation = remove_user(conversation, current_user_id)
@@ -56,11 +59,19 @@ class GetListConversationApi(Resource):
     def get_last_message(self, conversation):
         message = conversation["messages"]
         if len(message) == 0:
-            return False
+            return conversation
         last_message = message[-1]
         del conversation["messages"]
         conversation["last_messages"] = [last_message]
         return conversation
+
+    def check_is_not_friend(self, users):
+        user_1 = str(users[0].user)
+        user_2 = str(users[1].user)
+        friend_user_1 = Friend.objects.get(owner=user_1)
+        if friend_user_1.is_friend(user_2):
+            return False
+        return True
 
 
 class GetConversationApi(Resource):
@@ -120,7 +131,7 @@ class MessageApi(Resource):
 
             conversation = Conversation.objects.get_users(
                 users).first()
-            
+
             last_message = conversation.get_last_message()
 
             return Response(last_message.to_json(), mimetype="application/json")
