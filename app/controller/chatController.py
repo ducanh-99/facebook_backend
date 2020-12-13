@@ -117,10 +117,13 @@ class MessageApi(Resource):
 
             message = self.create_message(from_user, to_user, text, index)
             conversation.update(push__messages=message)
-            conversation = json.loads(conversation.to_json())
-            conversation = remove_user(conversation, from_user)
 
-            return Response(json.dumps(conversation), mimetype="application/json")
+            conversation = Conversation.objects.get_users(
+                users).first()
+            
+            last_message = conversation.get_last_message()
+
+            return Response(last_message.to_json(), mimetype="application/json")
         except response.NotAccess:
             res = response.not_access()
         except Exception:

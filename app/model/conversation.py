@@ -60,4 +60,7 @@ class Conversation(gj.Document):
             if index == message["index"]:
                 return message
         return None
+    
+    def get_last_message(self):
+        return self.messages[-1]
 
