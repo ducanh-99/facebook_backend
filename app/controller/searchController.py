@@ -53,7 +53,7 @@ class SearchApi(Resource):
                 items["username"] = user["username"]
                 items["id"] = user["id"]
                 friend = Friend.objects.get(owner=user["id"])
-                if friend.is_friend(user["id"]):
+                if friend.is_friend(user_id):
                     items["is_friend"] = True
                 else:
                     items["is_friend"] = False
