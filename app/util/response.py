@@ -21,6 +21,9 @@ class NotAccess(Exception):
 class PasswordInvalid(Exception):
     pass
 
+class AlreadyRequest(Exception):
+    pass
+
 
 def internal_server():
     sucess = {
@@ -145,6 +148,13 @@ def wrong_password():
     res = {
         "code": 1013,
         "message": "wrong Password"
+    }
+    return res
+
+def already_request():
+    res = {
+        "code": 1014,
+        "message": "Has sent your safe invitation"
     }
     return res
 

@@ -40,6 +40,12 @@ class Friend(gj.Document):
     def is_friend(self, user_id):
         return self.find_user(a_list=self.list_friend, user_id=user_id)
 
+    def is_request(self, user_id):
+        return self.find_user(a_list=self.list_request, user_id=user_id)    
+
+    def is_sent_request(self, user_id):
+        return self.find_user(a_list=self.list_sent_request, user_id=user_id)    
+
     def reject_request_recevied(self, user_id):
         for i in self.list_request:
             if str(i["user"]) == str(user_id):

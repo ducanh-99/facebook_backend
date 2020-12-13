@@ -53,9 +53,13 @@ class RequestApi(Resource):
             recevied_user = get_user_name(recevied)
 
             if sender_id != recevied_id:
-                Friend.objects(owner=sender_id).update_one(
+                sender_friend = Friend.objects.get(owner=sender_id)
+                recevied_friend = Friend.objects.get(owner=recevied_id)
+                if sender_friend.is_sent_request(recevied_id) or recevied_friend.is_request(sender_id):
+                    raise response.AlreadyRequest
+                sender_friend.update(
                     push__list_sent_request=recevied_user, inc__sent_request=1)
-                Friend.objects(owner=recevied_id).update_one(
+                recevied_friend.update(
                     push__list_request=sender_user, inc__requests=1)
 
             noti = NotificationController()
@@ -65,10 +69,11 @@ class RequestApi(Resource):
             self.res = response.sucess()
         except response.AlreadyFriend:
             self.res = response.were_friend()
+        except response.AlreadyRequest:
+            self.res = response.already_request()
         except DoesNotExist:
             self.res = response.user_is_invalid()
         except Exception:
-            raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
 
