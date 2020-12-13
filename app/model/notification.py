@@ -3,6 +3,7 @@ import mongoengine_goodjson as gj
 from mongoengine import IntField, ObjectIdField, ListField, EmbeddedDocumentField, StringField, DateTimeField
 import datetime
 from app.model.base_db import Base
+import json
 
 
 class NotiContent(gj.EmbeddedDocument):
@@ -46,3 +47,11 @@ class Notification(gj.Document):
         if not self.check_content_empty():
             index = self.content[-1].index + 1
         return index
+    
+    def exit_category_post(self, category, post_id):
+        # content = json.dumps(self.content.to_json())
+        for i in self.content:
+            i = json.loads(i.to_json())
+            if str(category) == str(i["category"]) and str(post_id) == str(i["post_id"]):
+                return True
+        return False

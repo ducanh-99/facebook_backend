@@ -77,6 +77,7 @@ class NotificationController():
             if owner != user_id:
                 notification = Notification.objects.get(owner=owner)
                 index = notification.get_index_content()
+                notification.exit_category_post("like", post_id)
 
                 text = "đã thích bài viết của bạn"
                 content = set_content(text=text, user_id=user_id,
@@ -105,7 +106,7 @@ class NotificationController():
         try:
             notification = Notification.objects.get(owner=owner)
             index = notification.get_index_content()
-            text = "đã gửi lời mới kết bạn"
+            text = "đã gửi lời mời kết bạn"
             content = set_content(
                 text=text, user_id=user_id, username=username, index=index,  category="friend")
             notification.update(push__content=content)
