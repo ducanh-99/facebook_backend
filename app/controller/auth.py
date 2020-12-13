@@ -7,6 +7,7 @@ import datetime
 
 from app.model.user import User
 from app.model.friends import Friend
+from app.model.notification import Notification
 from ..model.notification import Notification
 from app.util.errors import SchemaValidationError, NumberAlreadyExistsError, UnauthorizedError, \
     InternalServerError
@@ -36,6 +37,7 @@ class SignupApi(Resource):
             self.res = response_value(self.res, data)
             user.save()
             Friend(owner=user["id"]).save()
+            Notification(owner=user["id"]).save()
         except FieldDoesNotExist:
             self.res = response.parameter_not_enough()
         except NotUniqueError:

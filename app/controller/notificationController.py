@@ -74,26 +74,27 @@ class NotificationController():
     def like(self, owner, user_id, username, post_id):
         content = {}
         try:
-            notification = Notification.objects.get(owner=owner)
-            index = notification.get_index_content()
+            if owner != user_id:
+                notification = Notification.objects.get(owner=owner)
+                index = notification.get_index_content()
 
-            text = "đã thích bài viết của bạn"
-            content = set_content(text=text, user_id=user_id,
-                                  post_id=post_id, username=username, index=index, category="like")
-            notification.update(push__content=content)
+                text = "đã thích bài viết của bạn"
+                content = set_content(text=text, user_id=user_id,
+                                    post_id=post_id, username=username, index=index, category="like")
+                notification.update(push__content=content)
         except DoesNotExist:
             Notification(owner=owner).save()
 
     def comment(self, owner, user_id, username, post_id):
         try:
-            notification = Notification.objects.get(owner=owner)
-            index = notification.get_index_content()
+            if owner != user_id:
+                notification = Notification.objects.get(owner=owner)
+                index = notification.get_index_content()
 
-            text = "đã bình luận bài viết của bạn"
-            content = set_content(text=text, user_id=user_id,
-                                  post_id=post_id, username=username, index=index, category="comment")
-            print(content)
-            notification.update(push__content=content)
+                text = "đã bình luận bài viết của bạn"
+                content = set_content(text=text, user_id=user_id,
+                                    post_id=post_id, username=username, index=index, category="comment")
+                notification.update(push__content=content)                                                                                              
         except DoesNotExist:
             Notification(owner=owner).save()
 
