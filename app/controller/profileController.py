@@ -73,6 +73,8 @@ class ProfileApi(Resource):
             del user["blocks"]
             del user["uuid"]
             del user["verify"]
+            if str(current_user_id) == str(user_id):
+                pass
             user["is_friend"] = False
             current_friend = Friend.objects.get(owner=current_user_id)
             if current_friend.is_friend(user_id):
@@ -81,6 +83,7 @@ class ProfileApi(Resource):
         except DoesNotExist:
             self.res = response.user_is_invalid()
         except Exception:
+            raise Exception
             self.res = response.internal_server()
         return jsonify(self.res)
 
