@@ -185,6 +185,22 @@ class RejectApi(Resource):
             res = response.internal_server()
         return jsonify(res)
 
+class UndoRequestApi(Resource):
+
+    @jwt_required
+    def get(self, recevied_id):
+        try:
+            sender_id = get_jwt_identity()
+            if recevied_id != sender_id:
+                sender_friend = Friend.objects(owner=sender_id).first()
+                recevied_friend = Friend.objects(owner=recevied_id).first()
+                sender_friend.reject_request_sender(recevied_id)
+                recevied_friend.reject_request_recevied(sender_id)
+        except Exception:
+            raise Exception
+            res = response.internal_server()
+        return jsonify(res)
+
 
 class BlockApi(Resource):
     res = {}
