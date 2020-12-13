@@ -35,7 +35,9 @@ class SearchApi(Resource):
         try:
             user_id = get_jwt_identity()
             body = request.get_json()
-            search_all = Search.objects.get(owner=user_id)
+            search_all = Search.objects(owner=user_id).first()
+            if search_all == None:
+                search_all = Search(owner=user_id).save()
             Search.objects(owner=user_id).update_one(
                 push__history_search=body["keyword"])
             users = json.loads(User.objects(
@@ -48,7 +50,9 @@ class SearchApi(Resource):
                 posts[index]["is_liked"] = is_liked
             data = []
 
-            for user in users:
+            for index, user in enumerate(users):
+                if str(user["id"]) == str(user_id):
+                    del users[index]
                 items = {}
                 items["username"] = user["username"]
                 items["id"] = user["id"]
@@ -62,7 +66,7 @@ class SearchApi(Resource):
             self.res["user"] = data
             self.res["posts"] = posts[::-1]
         except DoesNotExist:
-            Search(owner=user_id).save()
+            self.res = response.user_is_invalid
         except Exception:
             self.res = response.internal_server()
             raise Exception
