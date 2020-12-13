@@ -23,7 +23,9 @@ class SearchApi(Resource):
             user_id = get_jwt_identity()
             search = Search.objects.get(owner=user_id)
             result = search.history_search
-
+            len_result = len(result)
+            if len_result >= 10:
+                result = result[len_result - 10: len_result]
         except DoesNotExist:
             print("not search")
         except Exception:
